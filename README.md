@@ -37,4 +37,49 @@ This project is a **community-first initiative**. We believe that education shou
 ## 📩 Welcome to the Community
 We are thrilled to have you here! Whether you are here to learn or to contribute, your presence makes the project better. Feel free to explore the algorithms, star the repo for future reference, and join us in making DSA learning easier for everyone.
 
-**Happy Coding!** 💻
+---
+
+## 🤝 How to Contribute (The Workflow)
+
+To ensure your contributions are merged smoothly, please follow this step-by-step workflow:
+
+### 1. Fork the Project
+Click the **Fork** button at the top right of this page to create a copy of this repository in your own GitHub account.
+
+### 2. Clone your forked repository
+```bash
+git clone https://github.com/<your_github_username>/DSA-Visualizer.git
+```
+### 3. Create a New Branch
+Always work on a new branch for each feature or fix to keep the main branch clean:
+
+```bash
+git checkout -b fix-issue-<ISSUE-NUMBER>
+```
+### 4. Check Changed Files
+After you have added your changes, check which files were modified:
+
+```bash
+git status -s
+```
+### 5. Add Files to Staging
+Add all the changed files to the staging area to prepare them for a commit:
+
+```bash
+git add .
+```
+### 6. Commit Your Changes
+Save your progress with a clear, descriptive message about what you changed:
+
+```bash
+git commit -m "Added: <EXPLAIN-YOUR-CHANGES>"
+```
+### 7. Push Your Changes
+Upload your local branch changes to your forked repository on GitHub:
+
+```bash
+git push origin fix-issue-<ISSUE-NUMBER>
+```
+### 8. Open a Pull Request
+Go to the original sanglaphalder/DSA-Visualizer repository on GitHub. You will see a green "Compare & pull request" button. Click it and describe your work!
+
