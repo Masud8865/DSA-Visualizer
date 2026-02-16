@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useVisualizer } from '../hooks/useVisualizer';
 import { motion } from 'framer-motion';
-import { RefreshCw, Play, Pause, RotateCcw, Code2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, Code2, Copy, Download, Check } from 'lucide-react';
 import { bubbleSort } from '../algorithms/bubbleSort';
 import { selectionSort } from '../algorithms/selectionSort';
 import { quickSort } from '../algorithms/quickSort';
@@ -27,6 +27,7 @@ export default function VisualizerPage({ name, codeSnippet }) {
   const { array, setArray, generateRandomArray } = useVisualizer();
   const [isSorting, setIsSorting] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   
   const stopSignal = useRef(false);
   const pauseSignal = useRef(false);
@@ -54,6 +55,34 @@ export default function VisualizerPage({ name, codeSnippet }) {
     }
     await algorithmMap[name].run(array, setArray, 30, stopSignal, pauseSignal);
     if (!stopSignal.current && !pauseSignal.current) setIsSorting(false);
+  };
+
+  const handleCopyCode = async () => {
+    const snippet = codeSnippet || '';
+    if (!snippet) return;
+
+    try {
+      await navigator.clipboard.writeText(snippet);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 1400);
+    } catch (error) {
+      console.error('Failed to copy code:', error);
+    }
+  };
+
+  const handleDownloadCode = () => {
+    const snippet = codeSnippet || '';
+    if (!snippet) return;
+
+    const blob = new Blob([snippet], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${name.toLowerCase().replace(/\s+/g, '-')}.cpp`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -113,9 +142,29 @@ export default function VisualizerPage({ name, codeSnippet }) {
       {/* C++ Code Section */}
       <div className="w-full max-w-5xl px-4 pb-24 mt-12">
         <div className="bg-slate-950 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden">
-          <div className="bg-slate-900 px-6 py-4 border-b border-slate-800 flex items-center gap-3 text-white">
-            <Code2 size={20} className="text-blue-500" />
-            <span className="font-bold tracking-widest text-sm uppercase">C++ Implementation</span>
+          <div className="bg-slate-900 px-6 py-4 border-b border-slate-800 flex items-center justify-between gap-3 text-white">
+            <div className="flex items-center gap-3">
+              <Code2 size={20} className="text-blue-500" />
+              <span className="font-bold tracking-widest text-sm uppercase">C++ Implementation</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleCopyCode}
+                className="flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-slate-700 transition-colors"
+              >
+                {isCopied ? <Check size={14} /> : <Copy size={14} />}
+                {isCopied ? 'Copied' : 'Copy'}
+              </button>
+              <button
+                type="button"
+                onClick={handleDownloadCode}
+                className="flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-slate-700 transition-colors"
+              >
+                <Download size={14} />
+                Download
+              </button>
+            </div>
           </div>
           <div className="p-8 overflow-x-auto">
             <pre className="text-sm font-mono leading-relaxed text-blue-100 whitespace-pre">
