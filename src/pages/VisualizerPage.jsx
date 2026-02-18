@@ -33,10 +33,10 @@ import { insertionSort } from '../algorithms/insertionSort';
 
 // SYNTAX HIGHLIGHTING (C++ & Java)
 const CODE_KEYWORDS = new Set([
-  "break", "case", "class", "const", "continue", "default", "do", "else", "enum", "for", "if", "new", "return", "struct", "switch", "template", "this", "throw", "typedef", "using", "virtual", "while", "public", "static", "package", "import"
+  "break", "case", "class", "const", "continue", "default", "do", "else", "enum", "for", "if", "new", "return", "struct", "switch", "template", "this", "throw", "typedef", "using", "virtual", "while", "public", "static", "package", "import", "def", "print", "len", "range", "in", "and", "or", "not", "is", "elif", "try", "except", "finally", "with", "as", "pass", "None", "True", "False"
 ]);
 const CODE_TYPES = new Set([
-  "bool", "char", "double", "float", "int", "long", "short", "void", "string", "vector", "std", "Scanner", "System", "String", "out", "println", "nextInt"
+  "bool", "char", "double", "float", "int", "long", "short", "void", "string", "vector", "std", "Scanner", "System", "String", "out", "println", "nextInt", "list", "dict", "set", "tuple", "map", "input"
 ]);
 const TOKEN_REGEX = /\/\*[\s\S]*?\*\/|\/\/.*|"(?:\\.|[^"\\])*"|^\s*#.*$|\b\d+\b|\b[a-zA-Z_]\w*\b/gm;
 
@@ -111,7 +111,7 @@ function formatElapsed(seconds) {
   return `${mins}:${secs}`;
 }
 
-export default function VisualizerPage({ name, cppSnippet, javaSnippet }) {
+export default function VisualizerPage({ name, cppSnippet, javaSnippet, pythonSnippet }) {
   const { array, setArray, generateRandomArray } = useVisualizer();
   const [isSorting, setIsSorting] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -132,7 +132,7 @@ export default function VisualizerPage({ name, cppSnippet, javaSnippet }) {
   const MotionBar = motion.div;
 
   const algorithm = algorithmMap[name];
-  const activeCode = selectedLanguage === "C++" ? cppSnippet : javaSnippet;
+  const activeCode = selectedLanguage === "C++" ? cppSnippet : selectedLanguage === "Java" ? javaSnippet : pythonSnippet;
 
   const sortedCount = useMemo(() => array.filter((item) => item.status === "sorted").length, [array]);
   const progress = useMemo(() => runStatus === "Completed" ? 100 : array.length === 0 ? 0 : Math.round((sortedCount / array.length) * 100), [array.length, runStatus, sortedCount]);
@@ -143,7 +143,7 @@ export default function VisualizerPage({ name, cppSnippet, javaSnippet }) {
   }, [array]);
 
   const maxValue = valueStats.max || 1;
-  const isTooLargeForValues = array.length > 35; 
+  const isTooLargeForValues = array.length > 35;
   const canShowValues = showValues && !isTooLargeForValues;
   const themeConfig = colorThemes[colorTheme] ?? colorThemes.ocean;
   const themeColors = themeConfig.colors;
@@ -222,7 +222,7 @@ export default function VisualizerPage({ name, cppSnippet, javaSnippet }) {
 
   // Missing handleDownloadCode (Restored)
   const handleDownloadCode = () => {
-    const extension = selectedLanguage === "C++" ? ".cpp" : ".java";
+    const extension = selectedLanguage === "C++" ? ".cpp" : selectedLanguage === "Java" ? ".java" : ".py";
     const blob = new Blob([activeCode], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -299,8 +299,8 @@ export default function VisualizerPage({ name, cppSnippet, javaSnippet }) {
               <MotionButton onClick={handleDownloadCode} className="flex items-center justify-center gap-2 rounded-xl bg-blue-500/10 py-2.5 text-sm font-bold text-blue-100 border border-blue-400/20 hover:bg-blue-500/20 transition-all"><Download size={16} /> Download</MotionButton>
             </div>
             <MotionButton whileHover={{ scale: 1.02 }} onClick={isPaused ? handleResume : (isSorting ? handlePause : handleStart)} className={`w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-bold text-white shadow-lg transition-all ${isPaused ? "bg-emerald-600" : (isSorting ? "bg-amber-500 text-slate-900" : "bg-gradient-to-r from-blue-600 to-cyan-500")}`}>
-               {isPaused ? <Play size={18} fill="currentColor" /> : (isSorting ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />)}
-               {isPaused ? "Resume" : (isSorting ? "Pause" : "Start")}
+              {isPaused ? <Play size={18} fill="currentColor" /> : (isSorting ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />)}
+              {isPaused ? "Resume" : (isSorting ? "Pause" : "Start")}
             </MotionButton>
           </div>
           <div className="mt-5 p-3 rounded-2xl border border-white/10 bg-white/5 text-[11px] text-slate-400 space-y-1">
@@ -319,8 +319,8 @@ export default function VisualizerPage({ name, cppSnippet, javaSnippet }) {
             </div>
           </div>
           <div className="relative h-[300px] sm:h-[450px] bg-slate-900/55 rounded-2xl border border-slate-700/60 flex items-end justify-center gap-0.5 px-4 pb-4">
-             {showGrid && <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px)", backgroundSize: "100% 32px, 32px 100%" }} />}
-             {array.map((item, i) => (
+            {showGrid && <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "linear-gradient(#94a3b8 1px, transparent 1px), linear-gradient(90deg, #94a3b8 1px, transparent 1px)", backgroundSize: "100% 32px, 32px 100%" }} />}
+            {array.map((item, i) => (
               <MotionBar key={i} layout transition={{ type: "spring", stiffness: 300, damping: 30 }} className={`relative rounded-t-sm flex items-end justify-center pb-1 ${getBarColor(item.status, themeColors)}`} style={{ height: `${(item.value / maxValue) * 100}%`, width: `${100 / array.length}%` }}>
                 {canShowValues && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[10px] font-bold text-white select-none mb-1" style={{ writingMode: array.length > 30 ? 'vertical-rl' : 'horizontal-tb' }}>{item.value}</motion.span>}
               </MotionBar>
@@ -335,7 +335,7 @@ export default function VisualizerPage({ name, cppSnippet, javaSnippet }) {
             <Code2 size={20} className="text-blue-400" />
             <span className="text-sm font-bold uppercase tracking-widest text-slate-200">{selectedLanguage} Source</span>
             <div className="ml-4 flex rounded-lg bg-white/5 p-1 border border-white/10">
-              {["C++", "Java"].map((lang) => (
+              {["C++", "Java", "Python"].map((lang) => (
                 <button key={lang} onClick={() => setSelectedLanguage(lang)} className={`px-3 py-1 text-[10px] font-bold rounded-md transition-all ${selectedLanguage === lang ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white"}`}>
                   {lang}
                 </button>
@@ -354,13 +354,13 @@ export default function VisualizerPage({ name, cppSnippet, javaSnippet }) {
         <div className="ll-scrollbar max-h-[500px] overflow-auto bg-[#020617] p-6 font-code text-sm leading-relaxed">
           <pre>
             <code>
-              {codeSnippet.split("\n").map((line, i) => (
+              {(activeCode || "").split("\n").map((line, i) => (
                 <div key={i} className="flex hover:bg-white/5 px-2 rounded">
                   <span className="w-8 shrink-0 text-slate-600 select-none text-right pr-4 text-xs">
                     {i + 1}
                   </span>
                   <span className="text-slate-300">
-                    {renderHighlightedCpp(line)}
+                    {renderHighlightedCode(line)}
                   </span>
                 </div>
               ))}
