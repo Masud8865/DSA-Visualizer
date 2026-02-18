@@ -40,8 +40,9 @@ const CODE_TYPES = new Set([
 ]);
 const TOKEN_REGEX = /\/\*[\s\S]*?\*\/|\/\/.*|"(?:\\.|[^"\\])*"|^\s*#.*$|\b\d+\b|\b[a-zA-Z_]\w*\b/gm;
 
-function getCodeTokenClass(token) {
-  if (token.startsWith("//") || token.startsWith("/*")) return "text-emerald-400/80 italic";
+function getCppTokenClass(token) {
+  if (token.startsWith("//") || token.startsWith("/*"))
+    return "text-emerald-400/80 italic";
   if (token.startsWith('"')) return "text-amber-300";
   if (token.trim().startsWith("#")) return "text-fuchsia-400";
   if (/^\d/.test(token)) return "text-orange-300";
@@ -50,7 +51,7 @@ function getCodeTokenClass(token) {
   return "text-slate-100";
 }
 
-function renderHighlightedCode(code) {
+function renderHighlightedCpp(code) {
   const nodes = [];
   let lastIndex = 0;
   const safeCode = code || "";
@@ -58,7 +59,7 @@ function renderHighlightedCode(code) {
     const token = match[0];
     const start = match.index;
     if (start > lastIndex) nodes.push(safeCode.slice(lastIndex, start));
-    nodes.push(<span key={start} className={getCodeTokenClass(token)}>{token}</span>);
+    nodes.push(<span key={start} className={getCppTokenClass(token)}>{token}</span>);
     lastIndex = start + token.length;
   }
   if (lastIndex < safeCode.length) nodes.push(safeCode.slice(lastIndex));
@@ -80,6 +81,7 @@ const statusStyleMap = {
   Running: "border-cyan-400/30 bg-cyan-500/10 text-cyan-100",
   Paused: "border-amber-400/30 bg-amber-500/10 text-amber-100",
   Completed: "border-emerald-400/30 bg-emerald-500/10 text-emerald-100",
+  Unavailable: "border-red-400/30 bg-red-500/10 text-red-100",
 };
 
 const legendTemplate = [
@@ -208,7 +210,6 @@ export default function VisualizerPage({ name, cppSnippet, javaSnippet }) {
   const handlePause = () => { pauseSignal.current = true; setIsPaused(true); setRunStatus("Paused"); };
   const handleResume = () => { pauseSignal.current = false; setIsPaused(false); setRunStatus("Running"); };
 
-  // Missing handleCopyCode (Restored)
   const handleCopyCode = async () => {
     if (!navigator?.clipboard) return;
     try {
@@ -220,7 +221,6 @@ export default function VisualizerPage({ name, cppSnippet, javaSnippet }) {
     }
   };
 
-  // Missing handleDownloadCode (Restored)
   const handleDownloadCode = () => {
     const extension = selectedLanguage === "C++" ? ".cpp" : ".java";
     const blob = new Blob([activeCode], { type: "text/plain" });
@@ -354,7 +354,8 @@ export default function VisualizerPage({ name, cppSnippet, javaSnippet }) {
         <div className="ll-scrollbar max-h-[500px] overflow-auto bg-[#020617] p-6 font-code text-sm leading-relaxed">
           <pre>
             <code>
-              {codeSnippet.split("\n").map((line, i) => (
+              {/* FIX: Changed codeSnippet to activeCode with safety check */}
+              {activeCode?.split("\n").map((line, i) => (
                 <div key={i} className="flex hover:bg-white/5 px-2 rounded">
                   <span className="w-8 shrink-0 text-slate-600 select-none text-right pr-4 text-xs">
                     {i + 1}
