@@ -100,3 +100,79 @@ int main() {
     for (int i = 0; i < n; i++) cout << arr[i] << " ";
     return 0;
 }`;
+
+export const selectionSortJava = `import java.util.Scanner;
+
+public class Main {
+    public static void selectionSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            int minIdx = i;
+            for (int j = i + 1; j < n; j++) {
+                if (arr[j] < arr[minIdx]) {
+                    minIdx = j;
+                }
+            }
+            int temp = arr[minIdx];
+            arr[minIdx] = arr[i];
+            arr[i] = temp;
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter number of elements: ");
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) arr[i] = sc.nextInt();
+
+        selectionSort(arr);
+
+        System.out.println("Sorted array:");
+        for (int i : arr) System.out.print(i + " ");
+    }
+}`;
+
+export const selectionSortPython = `def selection_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        min_idx = i
+        for j in range(i + 1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]
+
+if __name__ == "__main__":
+    arr = list(map(int, input("Enter elements: ").split()))
+    selection_sort(arr)
+    print("Sorted array:", *arr)`;
+
+export const selectionSortJS = `// Selection Sort Implementation in JavaScript
+function selectionSort(arr) {
+    const n = arr.length;
+
+    for (let i = 0; i < n - 1; i++) {
+        let minIndex = i;
+
+        // Find the minimum element in unsorted array
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        // Swap the found minimum element with the first element
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
+    }
+
+    return arr;
+}
+
+// Example usage
+const arr = [64, 25, 12, 22, 11];
+console.log(\"Original array:\", arr);
+
+selectionSort(arr);
+console.log(\"Sorted array:\", arr);`;
