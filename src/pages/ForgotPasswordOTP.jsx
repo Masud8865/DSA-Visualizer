@@ -1,65 +1,63 @@
 import { useState } from 'react';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { KeyRound, Lock, Eye, EyeOff, Loader2, ArrowRight } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1,
-        },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
 const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.5 },
-    },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import toast from 'react-hot-toast';
-
-export default function SignIn() {
-    useDocumentTitle('Sign In');
+export default function ForgotPasswordOTP() {
+    useDocumentTitle('Verify OTP & Reset Password');
     const navigate = useNavigate();
-    const { signin } = useAuth();
+    const location = useLocation();
+    const email = location.state?.email || 'your email';
+
     const [formData, setFormData] = useState({
-        email: '',
-        password: '',
+        otp: '',
+        newPassword: '',
+        confirmPassword: ''
     });
-    const [showPassword, setShowPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-
-        const result = await signin(formData);
-
-        setIsLoading(false);
-        if (result.success) {
-            toast.success('Welcome back!');
-            navigate('/');
-        } else {
-            toast.error(result.message);
-        }
-    };
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (formData.newPassword !== formData.confirmPassword) {
+            toast.error('Passwords do not match');
+            return;
+        }
+
+        if (formData.newPassword.length < 6) {
+            toast.error('Password must be at least 6 characters long');
+            return;
+        }
+
+        setIsLoading(true);
+        // Simulate API call for verifying OTP and resetting password
+        setTimeout(() => {
+            setIsLoading(false);
+            toast.success('Password reset successfully!');
+            navigate('/signin');
+        }, 2000);
+    };
+
     return (
         <div className="relative flex min-h-[calc(100vh-80px)] items-center justify-center overflow-hidden px-4 py-12 sm:px-6 lg:px-8">
-            {/* Background Blobs (matches Home.jsx aesthetics) */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -85,67 +83,65 @@ export default function SignIn() {
                 >
                     <div className="mb-8 text-center">
                         <h2 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
-                            Welcome Back
+                            Verify OTP
                         </h2>
                         <p className="mt-2 text-sm text-slate-400">
-                            Sign in to continue your learning journey
+                            Enter the OTP sent to <span className="font-medium text-slate-300">{email}</span> and your new password.
                         </p>
                     </div>
 
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         <motion.div variants={itemVariants}>
                             <label
-                                htmlFor="email"
+                                htmlFor="otp"
                                 className="mb-2 block text-sm font-medium text-slate-300"
                             >
-                                Email Address
+                                OTP Code
                             </label>
                             <div className="relative">
                                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                    <Mail className="h-5 w-5 text-slate-500" />
+                                    <KeyRound className="h-5 w-5 text-slate-500" />
                                 </div>
                                 <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="email"
+                                    id="otp"
+                                    name="otp"
+                                    type="text"
                                     required
-                                    value={formData.email}
+                                    value={formData.otp}
                                     onChange={handleChange}
                                     className="block w-full rounded-xl border border-white/10 bg-slate-800/50 py-3 pl-10 pr-3 text-slate-100 placeholder-slate-500 focus:border-blue-500 focus:bg-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm transition-all duration-300"
-                                    placeholder="you@example.com"
+                                    placeholder="Enter 6-digit OTP"
                                 />
                             </div>
                         </motion.div>
 
                         <motion.div variants={itemVariants}>
                             <label
-                                htmlFor="password"
+                                htmlFor="newPassword"
                                 className="mb-2 block text-sm font-medium text-slate-300"
                             >
-                                Password
+                                New Password
                             </label>
                             <div className="relative">
                                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                     <Lock className="h-5 w-5 text-slate-500" />
                                 </div>
                                 <input
-                                    id="password"
-                                    name="password"
-                                    type={showPassword ? 'text' : 'password'}
-                                    autoComplete="current-password"
+                                    id="newPassword"
+                                    name="newPassword"
+                                    type={showNewPassword ? 'text' : 'password'}
                                     required
-                                    value={formData.password}
+                                    value={formData.newPassword}
                                     onChange={handleChange}
                                     className="block w-full rounded-xl border border-white/10 bg-slate-800/50 py-3 pl-10 pr-12 text-slate-100 placeholder-slate-500 focus:border-blue-500 focus:bg-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm transition-all duration-300"
                                     placeholder="••••••••"
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() => setShowNewPassword(!showNewPassword)}
                                     className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-slate-300 transition-colors"
                                 >
-                                    {showPassword ? (
+                                    {showNewPassword ? (
                                         <EyeOff className="h-5 w-5" />
                                     ) : (
                                         <Eye className="h-5 w-5" />
@@ -154,31 +150,40 @@ export default function SignIn() {
                             </div>
                         </motion.div>
 
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center">
+                        <motion.div variants={itemVariants}>
+                            <label
+                                htmlFor="confirmPassword"
+                                className="mb-2 block text-sm font-medium text-slate-300"
+                            >
+                                Confirm New Password
+                            </label>
+                            <div className="relative">
+                                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                    <Lock className="h-5 w-5 text-slate-500" />
+                                </div>
                                 <input
-                                    id="remember-me"
-                                    name="remember-me"
-                                    type="checkbox"
-                                    className="h-4 w-4 rounded border-slate-600 bg-slate-800 text-blue-600 focus:ring-blue-500 focus:ring-offset-slate-900"
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    type={showConfirmPassword ? 'text' : 'password'}
+                                    required
+                                    value={formData.confirmPassword}
+                                    onChange={handleChange}
+                                    className="block w-full rounded-xl border border-white/10 bg-slate-800/50 py-3 pl-10 pr-12 text-slate-100 placeholder-slate-500 focus:border-blue-500 focus:bg-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm transition-all duration-300"
+                                    placeholder="••••••••"
                                 />
-                                <label
-                                    htmlFor="remember-me"
-                                    className="ml-2 block text-sm text-slate-400"
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-slate-300 transition-colors"
                                 >
-                                    Remember me
-                                </label>
+                                    {showConfirmPassword ? (
+                                        <EyeOff className="h-5 w-5" />
+                                    ) : (
+                                        <Eye className="h-5 w-5" />
+                                    )}
+                                </button>
                             </div>
-
-                            <div className="text-sm">
-                                <Link
-                                    to="/forgot-password"
-                                    className="font-medium text-blue-400 hover:text-blue-300 transition-colors"
-                                >
-                                    Forgot password?
-                                </Link>
-                            </div>
-                        </div>
+                        </motion.div>
 
                         <motion.button
                             variants={itemVariants}
@@ -192,7 +197,7 @@ export default function SignIn() {
                                 <Loader2 className="h-5 w-5 animate-spin" />
                             ) : (
                                 <>
-                                    Sign In
+                                    Reset Password
                                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                                 </>
                             )}
@@ -201,12 +206,11 @@ export default function SignIn() {
 
                     <motion.div variants={itemVariants} className="mt-6 text-center">
                         <p className="text-sm text-slate-400">
-                            Don't have an account?{' '}
                             <Link
-                                to="/signup"
+                                to="/forgot-password"
                                 className="font-medium text-blue-400 hover:text-blue-300 transition-colors"
                             >
-                                Sign up for free
+                                Back to send OTP
                             </Link>
                         </p>
                     </motion.div>
