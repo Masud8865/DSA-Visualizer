@@ -1,15 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
-import { motion } from "framer-motion";
 import {
   Activity,
   Binary,
   CheckCheck,
   Clock3,
-  Play,
-  Pause,
-  RotateCcw,
-  Code2,
   Shuffle,
   Eye,
   EyeOff,
@@ -19,10 +15,17 @@ import {
   Sparkles,
   Download,
   Keyboard,
+  ArrowLeft,
+  RotateCcw,
+  Play,
+  Pause,
+  Code2,
+  Type
 } from "lucide-react";
+
 import { useVisualizer } from "../hooks/useVisualizer";
+import { motion } from "framer-motion";
 import { bubbleSort } from "../algorithms/bubbleSort";
-import { selectionSort } from "../algorithms/selectionSort";
 import { quickSort } from "../algorithms/quickSort";
 import { linearSearch } from "../algorithms/linearSearch";
 import { radixSort } from "../algorithms/radixSort";
@@ -31,14 +34,20 @@ import { insertionSort } from "../algorithms/insertionSort";
 import { dfs } from "../algorithms/dfs";
 import { interpolationSearch } from "../algorithms/interpolationSearch";
 import { renderHighlightedCode } from "../utils/codeHighlight";
+import { binarysearch } from '../algorithms/binarySearch';
+import { selectionSort } from "../algorithms/selectionSort";
+import { mergeSort } from "../algorithms/mergeSort";
+import CustomInputModal from "../components/CustomInputModal";
+import AlgorithmExplanationPanel from "../components/AlgorithmExplanationPanel";
+
 
 const algorithmMap = {
   "Bubble Sort": {
     run: bubbleSort,
     category: "Sorting",
     best: "O(n)",
-    average: "O(n^2)",
-    worst: "O(n^2)",
+    average: "O(n²)",
+    worst: "O(n²)",
     space: "O(1)",
     description:
       "Bubble Sort compares adjacent bars and swaps them until larger values settle at the end.",
@@ -46,9 +55,9 @@ const algorithmMap = {
   "Selection Sort": {
     run: selectionSort,
     category: "Sorting",
-    best: "O(n^2)",
-    average: "O(n^2)",
-    worst: "O(n^2)",
+    best: "O(n²)",
+    average: "O(n²)",
+    worst: "O(n²)",
     space: "O(1)",
     description:
       "Selection Sort repeatedly chooses the smallest unsorted value and places it into position.",
@@ -58,7 +67,7 @@ const algorithmMap = {
     category: "Sorting",
     best: "O(n log n)",
     average: "O(n log n)",
-    worst: "O(n^2)",
+    worst: "O(n²)",
     space: "O(log n)",
     description:
       "Quick Sort partitions around a pivot and recursively solves left and right subarrays.",
@@ -72,6 +81,16 @@ const algorithmMap = {
     space: "O(1)",
     description:
       "Linear Search scans each value from left to right until the target value is discovered.",
+  },
+  "Binary Search":{
+    run: binarysearch,//  function for animation
+    category: "Searching",
+    best: "O(1)",                // if the target is in the middle
+    average: "O(log n)",
+    worst: "O(log n)",
+    space: "O(1)",
+    description:
+      "Searches a sorted array by repeatedly dividing the search interval in half to find the target element.",
   },
   "Interpolation Search": {
     run: interpolationSearch,
@@ -97,8 +116,8 @@ const algorithmMap = {
     run: insertionSort,
     category: "Sorting",
     best: "O(n)",
-    average: "O(n^2)",
-    worst: "O(n^2)",
+    average: "O(n²)",
+    worst: "O(n²)",
     space: "O(1)",
     description:
       "Insertion Sort builds the final sorted array one item at a time by shifting larger elements to the right.",
@@ -123,6 +142,17 @@ const algorithmMap = {
     description:
       "Depth First Search traversal on an implicit Binary Tree structure.",
   },
+  'Merge Sort': {
+  run: mergeSort,
+  category: "Sorting",
+  best: "O(n log n)",
+  average: "O(n log n)",
+  worst: "O(n log n)",
+  space: "O(n)",
+  description:
+    "Merge Sort is a divide-and-conquer algorithm that splits the array into halves, recursively sorts them, and merges the sorted halves.",
+},
+// Add your algorithm name and function to the run parameter.
 };
 
 const statusStyleMap = {
@@ -186,7 +216,23 @@ export default function VisualizerPage({
   pythonSnippet,
   jsSnippet,
 }) {
-  const { array, setArray, generateRandomArray } = useVisualizer();
+  const { 
+    array, 
+    setArray, 
+    generateRandomArray, 
+    setCustomArray, 
+    generatePresetArray, 
+    setArrayFromFile,
+    currentStep,
+    totalSteps,
+    explanation,
+    operation,
+    variables,
+    updateStepInfo,
+    resetStepInfo
+  } = useVisualizer();
+
+  const navigate = useNavigate();
   useDocumentTitle(name);
   const [isSorting, setIsSorting] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -199,8 +245,10 @@ export default function VisualizerPage({
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [copyState, setCopyState] = useState("idle");
   const [selectedLanguage, setSelectedLanguage] = useState("C++");
+  const [isCustomInputOpen, setIsCustomInputOpen] = useState(false);
 
   const stopSignal = useRef(false);
+
   const pauseSignal = useRef(false);
   const MotionDiv = motion.div;
   const MotionButton = motion.button;
@@ -347,6 +395,37 @@ export default function VisualizerPage({
     generateRandomArray(nextSize);
   };
 
+  const handleCustomInput = (values) => {
+    stopSignal.current = true;
+    pauseSignal.current = false;
+    setIsSorting(false);
+    setIsPaused(false);
+    setRunStatus("Idle");
+    setElapsedSeconds(0);
+    return setCustomArray(values);
+  };
+
+  const handlePresetSelect = (presetType) => {
+    stopSignal.current = true;
+    pauseSignal.current = false;
+    setIsSorting(false);
+    setIsPaused(false);
+    setRunStatus("Idle");
+    setElapsedSeconds(0);
+    generatePresetArray(presetType, arraySize);
+  };
+
+  const handleFileUpload = async (file) => {
+    stopSignal.current = true;
+    pauseSignal.current = false;
+    setIsSorting(false);
+    setIsPaused(false);
+    setRunStatus("Idle");
+    setElapsedSeconds(0);
+    return await setArrayFromFile(file);
+  };
+
+
   const handleResetHighlights = () => {
     stopSignal.current = true;
     setRunStatus("Idle");
@@ -362,7 +441,8 @@ export default function VisualizerPage({
     setIsSorting(true);
     setRunStatus("Running");
     setElapsedSeconds(0);
-    await algorithm.run(array, setArray, speed, stopSignal, pauseSignal);
+    // Pass updateStepInfo as 6th parameter to algorithm
+    await algorithm.run(array, setArray, speed, stopSignal, pauseSignal, updateStepInfo);
     if (!stopSignal.current) setRunStatus("Completed");
     setIsSorting(false);
   };
@@ -411,6 +491,18 @@ export default function VisualizerPage({
       >
         <div className="relative z-10 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
           <div>
+            <div className="mb-6 flex items-center">
+              <button
+                onClick={() => navigate("/algorithms")}
+                className="group flex items-center gap-2 rounded-full border border-white/10 bg-white/5 pr-4 pl-3 py-1.5 text-xs font-bold text-slate-300 transition-all hover:bg-white/10 hover:text-white"
+              >
+                <ArrowLeft
+                  size={14}
+                  className="transition-transform group-hover:-translate-x-1"
+                />
+                Back to Algorithms
+              </button>
+            </div>
             <div className="mb-4 flex flex-wrap items-center gap-2">
               <span className="rounded-full border border-cyan-400/25 bg-cyan-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-cyan-200">
                 {algorithm?.category}
@@ -488,116 +580,137 @@ export default function VisualizerPage({
         </div>
       </motion.section>
 
-      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[360px_1fr]">
-        <aside className="rounded-3xl border border-white/10 bg-slate-800/35 p-5 backdrop-blur xl:sticky xl:top-24">
-          <div className="mb-5 flex items-center gap-2">
-            <SlidersHorizontal size={18} className="text-cyan-300" />
-            <h2 className="text-sm font-bold uppercase tracking-widest text-white">
-              Controls
-            </h2>
-          </div>
-          <div className="space-y-4">
-            <div className="rounded-2xl bg-white/5 p-3">
-              <label className="flex justify-between text-xs text-slate-400 mb-2 uppercase">
-                <span>Size</span> <span>{arraySize}</span>
-              </label>
-              <input
-                type="range"
-                min="16"
-                max="80"
-                value={arraySize}
-                disabled={isSorting}
-                onChange={(e) => {
-                  setArraySize(+e.target.value);
-                  handleGenerateNew(+e.target.value);
-                }}
-                className="w-full accent-cyan-400"
-              />
+      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[340px_1fr]">
+        <div className="space-y-6">
+          {/* Controls Sidebar */}
+          <aside className="rounded-3xl border border-white/10 bg-slate-800/35 p-5 backdrop-blur xl:sticky xl:top-24">
+            <div className="mb-5 flex items-center gap-2">
+              <SlidersHorizontal size={18} className="text-cyan-300" />
+              <h2 className="text-sm font-bold uppercase tracking-widest text-white">
+                Controls
+              </h2>
             </div>
-            <div className="rounded-2xl bg-white/5 p-3">
-              <label className="flex justify-between text-xs text-slate-400 mb-2 uppercase">
-                <span>Delay</span> <span>{speed}ms</span>
-              </label>
-              <input
-                type="range"
-                min="10"
-                max="150"
-                value={speed}
-                disabled={isSorting}
-                onChange={(e) => setSpeed(+e.target.value)}
-                className="w-full accent-blue-400"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <MotionButton
-                onClick={handleResetHighlights}
-                className="flex items-center justify-center gap-2 rounded-xl bg-white/5 py-2.5 text-sm font-bold text-white border border-white/10"
-              >
-                <RotateCcw size={16} /> Reset
-              </MotionButton>
-              <MotionButton
-                onClick={() => handleGenerateNew()}
-                className="flex items-center justify-center gap-2 rounded-xl bg-cyan-500/10 py-2.5 text-sm font-bold text-cyan-100 border border-cyan-400/20"
-              >
-                <Shuffle size={16} /> New Data
-              </MotionButton>
-            </div>
-            <div className="grid grid-cols-2 gap-2 items-start">
-              <div className="flex flex-col">
+            <div className="space-y-4">
+              <div className="rounded-2xl bg-white/5 p-3">
+                <label className="flex justify-between text-xs text-slate-400 mb-2 uppercase">
+                  <span>Size</span> <span>{arraySize}</span>
+                </label>
+                <input
+                  type="range"
+                  min="16"
+                  max="80"
+                  value={arraySize}
+                  disabled={isSorting}
+                  onChange={(e) => {
+                    setArraySize(+e.target.value);
+                    handleGenerateNew(+e.target.value);
+                  }}
+                  className="w-full accent-cyan-400"
+                />
+              </div>
+              <div className="rounded-2xl bg-white/5 p-3">
+                <label className="flex justify-between text-xs text-slate-400 mb-2 uppercase">
+                  <span>Delay</span> <span>{speed}ms</span>
+                </label>
+                <input
+                  type="range"
+                  min="10"
+                  max="150"
+                  value={speed}
+                  disabled={isSorting}
+                  onChange={(e) => setSpeed(+e.target.value)}
+                  className="w-full accent-blue-400"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
                 <MotionButton
-                  onClick={() =>
-                    !isTooLargeForValues && setShowValues(!showValues)
-                  }
-                  className={`flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold border transition-all ${isTooLargeForValues ? "bg-slate-800/50 border-white/5 text-slate-500 cursor-not-allowed" : "bg-white/5 border-white/10 text-white hover:bg-white/10"}`}
+                  onClick={handleResetHighlights}
+                  className="flex items-center justify-center gap-2 rounded-xl bg-white/5 py-2.5 text-sm font-bold text-white border border-white/10"
                 >
-                  {showValues && !isTooLargeForValues ? (
-                    <EyeOff size={16} />
-                  ) : (
-                    <Eye size={16} />
-                  )}{" "}
-                  {isTooLargeForValues
-                    ? "Hidden"
-                    : showValues
-                      ? "Hide"
-                      : "Values"}
+                  <RotateCcw size={16} /> Reset
                 </MotionButton>
-                {isTooLargeForValues && (
-                  <p className="mt-1 text-[9px] text-amber-400/90 text-center font-medium animate-pulse">
-                    Size must be ≤ 35
-                  </p>
-                )}
+                <MotionButton
+                  onClick={() => handleGenerateNew()}
+                  className="flex items-center justify-center gap-2 rounded-xl bg-cyan-500/10 py-2.5 text-sm font-bold text-cyan-100 border border-cyan-400/20"
+                >
+                  <Shuffle size={16} /> New Data
+                </MotionButton>
               </div>
               <MotionButton
-                onClick={handleDownloadCode}
-                className="flex items-center justify-center gap-2 rounded-xl bg-blue-500/10 py-2.5 text-sm font-bold text-blue-100 border border-blue-400/20 hover:bg-blue-500/20 transition-all"
+                onClick={() => setIsCustomInputOpen(true)}
+                disabled={isSorting}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-violet-500/10 py-2.5 text-sm font-bold text-violet-100 border border-violet-400/20 hover:bg-violet-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Download size={16} /> Download
+                <Type size={16} /> Custom Input
+              </MotionButton>
+
+              <div className="grid grid-cols-2 gap-2 items-start">
+                <div className="flex flex-col">
+                  <MotionButton
+                    onClick={() =>
+                      !isTooLargeForValues && setShowValues(!showValues)
+                    }
+                    className={`flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold border transition-all ${isTooLargeForValues ? "bg-slate-800/50 border-white/5 text-slate-500 cursor-not-allowed" : "bg-white/5 border-white/10 text-white hover:bg-white/10"}`}
+                  >
+                    {showValues && !isTooLargeForValues ? (
+                      <EyeOff size={16} />
+                    ) : (
+                      <Eye size={16} />
+                    )}{" "}
+                    {isTooLargeForValues
+                      ? "Hidden"
+                      : showValues
+                        ? "Hide"
+                        : "Values"}
+                  </MotionButton>
+                  {isTooLargeForValues && (
+                    <p className="mt-1 text-[9px] text-amber-400/90 text-center font-medium animate-pulse">
+                      Size must be ≤ 35
+                    </p>
+                  )}
+                </div>
+                <MotionButton
+                  onClick={handleDownloadCode}
+                  className="flex items-center justify-center gap-2 rounded-xl bg-blue-500/10 py-2.5 text-sm font-bold text-blue-100 border border-blue-400/20 hover:bg-blue-500/20 transition-all"
+                >
+                  <Download size={16} /> Download
+                </MotionButton>
+              </div>
+              <MotionButton
+                whileHover={{ scale: 1.02 }}
+                onClick={
+                  isPaused ? handleResume : isSorting ? handlePause : handleStart
+                }
+                className={`w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-bold text-white shadow-lg transition-all ${isPaused ? "bg-emerald-600" : isSorting ? "bg-amber-500 text-slate-900" : "bg-gradient-to-r from-blue-600 to-cyan-500"}`}
+              >
+                {isPaused ? (
+                  <Play size={18} fill="currentColor" />
+                ) : isSorting ? (
+                  <Pause size={18} fill="currentColor" />
+                ) : (
+                  <Play size={18} fill="currentColor" />
+                )}
+                {isPaused ? "Resume" : isSorting ? "Pause" : "Start"}
               </MotionButton>
             </div>
-            <MotionButton
-              whileHover={{ scale: 1.02 }}
-              onClick={
-                isPaused ? handleResume : isSorting ? handlePause : handleStart
-              }
-              className={`w-full flex items-center justify-center gap-2 rounded-2xl py-3.5 font-bold text-white shadow-lg transition-all ${isPaused ? "bg-emerald-600" : isSorting ? "bg-amber-500 text-slate-900" : "bg-gradient-to-r from-blue-600 to-cyan-500"}`}
-            >
-              {isPaused ? (
-                <Play size={18} fill="currentColor" />
-              ) : isSorting ? (
-                <Pause size={18} fill="currentColor" />
-              ) : (
-                <Play size={18} fill="currentColor" />
-              )}
-              {isPaused ? "Resume" : isSorting ? "Pause" : "Start"}
-            </MotionButton>
-          </div>
-          <div className="mt-5 p-3 rounded-2xl border border-white/10 bg-white/5 text-[11px] text-slate-400 space-y-1">
-            <p className="font-bold text-slate-200 uppercase mb-1 flex items-center gap-1">
-              <Keyboard size={12} /> Shortcuts
-            </p>
-            <p>Space: Start/Pause | R: Reset | N: New</p>
-          </div>
-        </aside>
+            <div className="mt-5 p-3 rounded-2xl border border-white/10 bg-white/5 text-[11px] text-slate-400 space-y-1">
+              <p className="font-bold text-slate-200 uppercase mb-1 flex items-center gap-1">
+                <Keyboard size={12} /> Shortcuts
+              </p>
+              <p>Space: Start/Pause | R: Reset | N: New</p>
+            </div>
+          </aside>
+
+          {/* Algorithm Explanation Panel */}
+          <AlgorithmExplanationPanel
+            currentStep={currentStep}
+            totalSteps={totalSteps}
+            explanation={explanation}
+            operation={operation}
+            variables={variables}
+            isRunning={isSorting || isPaused}
+          />
+        </div>
 
         <section className="rounded-3xl border border-white/10 bg-slate-800/35 p-4 backdrop-blur sm:p-6 shadow-2xl">
           <div className="mb-4 flex justify-between items-center">
@@ -657,14 +770,35 @@ export default function VisualizerPage({
         </section>
       </div>
 
+      <CustomInputModal
+        isOpen={isCustomInputOpen}
+        onClose={() => setIsCustomInputOpen(false)}
+        onCustomInput={handleCustomInput}
+        onPresetSelect={handlePresetSelect}
+        onFileUpload={handleFileUpload}
+        isSorting={isSorting}
+      />
+
       <section className="mt-6 overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl">
-        <div className="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-6 py-4">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-4 border-b border-slate-800 bg-slate-900 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => navigate("/algorithms")}
+              className="group flex items-center gap-2 rounded-lg bg-white/5 pr-4 pl-3 py-2 text-xs font-bold text-slate-200 transition-all hover:bg-white/10 hover:text-white border border-white/10"
+            >
+              <ArrowLeft
+                size={14}
+                className="transition-transform group-hover:-translate-x-1"
+              />
+              Back to Algorithms
+            </button>
+            <div className="h-6 w-px bg-slate-700 hidden sm:block" />
             <Code2 size={20} className="text-blue-400" />
             <span className="text-sm font-bold uppercase tracking-widest text-slate-200">
               {selectedLanguage} Source
             </span>
-            <div className="ml-4 flex rounded-lg bg-white/5 p-1 border border-white/10">
+            <div className="flex rounded-lg bg-white/5 p-1 border border-white/10">
               {["C++", "Java", "Python", "JavaScript"].map((lang) => (
                 <button
                   key={lang}

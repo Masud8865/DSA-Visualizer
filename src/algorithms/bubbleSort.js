@@ -1,19 +1,44 @@
 import { sleep } from '../utils/helpers';
 
-export const bubbleSort = async (array, setArray, speed, stopSignal, pauseSignal) => {
+export const bubbleSort = async (array, setArray, speed, stopSignal, pauseSignal, updateStepInfo) => {
     let arr = array.map(item => ({ ...item }));
     let n = arr.length;
+    let stepCounter = 0;
+    const totalSteps = n * (n - 1) / 2;
+
+    // Initialize step info
+    if (updateStepInfo) {
+        updateStepInfo({
+            totalSteps,
+            currentStep: 0,
+            operation: 'Starting Bubble Sort',
+            explanation: 'Bubble Sort will iterate through the array, comparing adjacent elements and swapping them if they are in the wrong order.',
+            variables: { i: 0, j: 0, n }
+        });
+    }
 
     for (let i = 0; i < n; i++) {
         for (let j = 0; j < n - i - 1; j++) {
+            stepCounter++;
 
             // 1. CHECK FOR STOP
             if (stopSignal.current) return;
 
             // 2. CHECK FOR PAUSE (The Wait Loop)
             while (pauseSignal.current) {
-                if (stopSignal.current) return; // Allow reset while paused
-                await sleep(100); // Wait 100ms and check again
+                if (stopSignal.current) return;
+                await sleep(100);
+            }
+
+            // Update step info for comparison
+            if (updateStepInfo) {
+                updateStepInfo({
+                    currentStep: stepCounter,
+                    totalSteps,
+                    operation: `Comparing indices ${j} and ${j + 1}`,
+                    explanation: `Checking if element at index ${j} (value: ${arr[j].value}) is greater than element at index ${j + 1} (value: ${arr[j + 1].value}).`,
+                    variables: { i, j, 'arr[j]': arr[j].value, 'arr[j+1]': arr[j + 1].value, sorted: n - i - 1 }
+                });
             }
 
             arr[j].status = 'comparing';
@@ -22,6 +47,17 @@ export const bubbleSort = async (array, setArray, speed, stopSignal, pauseSignal
             await sleep(speed);
 
             if (arr[j].value > arr[j + 1].value) {
+                // Update step info for swap
+                if (updateStepInfo) {
+                    updateStepInfo({
+                        currentStep: stepCounter,
+                        totalSteps,
+                        operation: `Swapping ${arr[j].value} and ${arr[j + 1].value}`,
+                        explanation: `Since ${arr[j].value} > ${arr[j + 1].value}, we swap these two elements to move the larger value towards the right.`,
+                        variables: { i, j, 'swapping': `${arr[j].value} ↔ ${arr[j + 1].value}`, sorted: n - i - 1 }
+                    });
+                }
+
                 arr[j].status = 'swapping';
                 arr[j + 1].status = 'swapping';
 
@@ -38,35 +74,69 @@ export const bubbleSort = async (array, setArray, speed, stopSignal, pauseSignal
         }
         arr[n - 1 - i].status = 'sorted';
         setArray([...arr]);
+        
+        // Update step info for sorted element
+        if (updateStepInfo) {
+            updateStepInfo({
+                currentStep: stepCounter,
+                totalSteps,
+                operation: `Element ${arr[n - 1 - i].value} is now sorted`,
+                explanation: `The element at index ${n - 1 - i} is in its final sorted position.`,
+                variables: { i, 'sorted index': n - 1 - i, 'sorted value': arr[n - 1 - i].value }
+            });
+        }
+    }
+    
+    // Final step
+    if (updateStepInfo) {
+        updateStepInfo({
+            currentStep: totalSteps,
+            totalSteps,
+            operation: 'Bubble Sort Complete',
+            explanation: 'All elements have been sorted in ascending order. The algorithm is finished!',
+            variables: {}
+        });
     }
 };
 
 export const bubbleSortCPP = `#include <iostream>
-using namespace std;
+#include <vector>
+#include <algorithm> 
+void bubbleSort(std::vector<int>& arr) {
+    const std::size_t n = arr.size();
+    if (n < 2) return;
 
-void bubbleSort(int arr[], int n) {
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
+    for (std::size_t i = 0; i < n - 1; ++i) {
+        bool swapped = false;
+        for (std::size_t j = 0; j < n - i - 1; ++j) {
             if (arr[j] > arr[j + 1]) {
-                int temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
+                std::swap(arr[j], arr[j + 1]);
+                swapped = true;
             }
         }
+        if (!swapped) break;
     }
 }
 
 int main() {
-    int n;
-    cout << "Enter number of elements: ";
-    cin >> n;
-    int arr[n];
-    for (int i = 0; i < n; i++) cin >> arr[i];
+    std::size_t n;
+    std::cout << "Enter number of elements: ";
+    if (!(std::cin >> n)) return 1;
+    std::vector<int> arr(n);
 
-    bubbleSort(arr, n);
+    std::cout << "Enter " << n << " elements: " << std::endl;
+    for (std::size_t i = 0; i < n; ++i) {
+        std::cin >> arr[i];
+    }
 
-    cout << "Sorted array: \\n";
-    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    bubbleSort(arr);     
+
+    std::cout << "Sorted array: " << std::endl;
+    for (const auto& element : arr) {
+        std::cout << element << " ";
+    }
+    std::cout << std::endl;
+
     return 0;
 }`;
 
