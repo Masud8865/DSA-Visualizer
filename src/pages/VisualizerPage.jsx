@@ -19,8 +19,10 @@ import {
   RotateCcw,
   Play,
   Pause,
-  Code2
+  Code2,
+  Type
 } from "lucide-react";
+
 import { useVisualizer } from "../hooks/useVisualizer";
 import { motion } from "framer-motion";
 import { bubbleSort } from "../algorithms/bubbleSort";
@@ -35,6 +37,8 @@ import { renderHighlightedCode } from "../utils/codeHighlight";
 import { binarysearch } from '../algorithms/binarySearch';
 import { selectionSort } from "../algorithms/selectionSort";
 import { mergeSort } from "../algorithms/mergeSort";
+import CustomInputModal from "../components/CustomInputModal";
+
 
 const algorithmMap = {
   "Bubble Sort": {
@@ -211,7 +215,8 @@ export default function VisualizerPage({
   pythonSnippet,
   jsSnippet,
 }) {
-  const { array, setArray, generateRandomArray } = useVisualizer();
+  const { array, setArray, generateRandomArray, setCustomArray, generatePresetArray, setArrayFromFile } = useVisualizer();
+
   const navigate = useNavigate();
   useDocumentTitle(name);
   const [isSorting, setIsSorting] = useState(false);
@@ -225,8 +230,10 @@ export default function VisualizerPage({
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [copyState, setCopyState] = useState("idle");
   const [selectedLanguage, setSelectedLanguage] = useState("C++");
+  const [isCustomInputOpen, setIsCustomInputOpen] = useState(false);
 
   const stopSignal = useRef(false);
+
   const pauseSignal = useRef(false);
   const MotionDiv = motion.div;
   const MotionButton = motion.button;
@@ -372,6 +379,37 @@ export default function VisualizerPage({
     setElapsedSeconds(0);
     generateRandomArray(nextSize);
   };
+
+  const handleCustomInput = (values) => {
+    stopSignal.current = true;
+    pauseSignal.current = false;
+    setIsSorting(false);
+    setIsPaused(false);
+    setRunStatus("Idle");
+    setElapsedSeconds(0);
+    return setCustomArray(values);
+  };
+
+  const handlePresetSelect = (presetType) => {
+    stopSignal.current = true;
+    pauseSignal.current = false;
+    setIsSorting(false);
+    setIsPaused(false);
+    setRunStatus("Idle");
+    setElapsedSeconds(0);
+    generatePresetArray(presetType, arraySize);
+  };
+
+  const handleFileUpload = async (file) => {
+    stopSignal.current = true;
+    pauseSignal.current = false;
+    setIsSorting(false);
+    setIsPaused(false);
+    setRunStatus("Idle");
+    setElapsedSeconds(0);
+    return await setArrayFromFile(file);
+  };
+
 
   const handleResetHighlights = () => {
     stopSignal.current = true;
@@ -580,6 +618,14 @@ export default function VisualizerPage({
                 <Shuffle size={16} /> New Data
               </MotionButton>
             </div>
+            <MotionButton
+              onClick={() => setIsCustomInputOpen(true)}
+              disabled={isSorting}
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-violet-500/10 py-2.5 text-sm font-bold text-violet-100 border border-violet-400/20 hover:bg-violet-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Type size={16} /> Custom Input
+            </MotionButton>
+
             <div className="grid grid-cols-2 gap-2 items-start">
               <div className="flex flex-col">
                 <MotionButton
@@ -695,8 +741,18 @@ export default function VisualizerPage({
         </section>
       </div>
 
+      <CustomInputModal
+        isOpen={isCustomInputOpen}
+        onClose={() => setIsCustomInputOpen(false)}
+        onCustomInput={handleCustomInput}
+        onPresetSelect={handlePresetSelect}
+        onFileUpload={handleFileUpload}
+        isSorting={isSorting}
+      />
+
       <section className="mt-6 overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl">
         <div className="flex flex-col gap-4 border-b border-slate-800 bg-slate-900 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => navigate("/algorithms")}
