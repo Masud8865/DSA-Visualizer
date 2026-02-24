@@ -22,6 +22,7 @@ import ForgotPasswordEmail from "./pages/ForgotPasswordEmail";
 import ForgotPasswordOTP from "./pages/ForgotPasswordOTP";
 import BoyerMoorePage from "./pages/BoyerMoorePage";
 import FloydWarshallPage from "./pages/FloydWarshallPage";
+import ComparisonPage from "./pages/ComparisonPage";
 
 // UPDATED IMPORTS: Including both CPP and Java versions
 import {
@@ -242,7 +243,8 @@ export default function App() {
               <Route path="/visualizer/dfs" element={<GraphVisualizerPage />} />
               <Route path="/visualizer/topological-sort" element={<TopologicalSortPage />} />
               <Route path="/visualizer/huffman-coding" element={<HuffmanCodingPage />} />
-              <Route path="/visualizer/floyd-warshall" element={<FloydWarshallPage />} />
+<Route path="/visualizer/floyd-warshall" element={<FloydWarshallPage />} />
+              <Route path="/compare" element={<ComparisonPage />} />
             </Routes>
           </main>
 
