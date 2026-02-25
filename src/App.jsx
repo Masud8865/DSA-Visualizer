@@ -22,6 +22,7 @@ import HuffmanCodingPage from "./pages/HuffmanCodingPage";
 import ForgotPasswordEmail from "./pages/ForgotPasswordEmail";
 import ForgotPasswordOTP from "./pages/ForgotPasswordOTP";
 import BoyerMoorePage from "./pages/BoyerMoorePage";
+import ArrayTraversalPage from "./pages/ArrayTraversalPage";
 import OAuthSuccess from "./pages/OAuthSuccess";
 import FloydWarshallPage from "./pages/FloydWarshallPage";
 import ComparisonPage from "./pages/ComparisonPage";
@@ -132,6 +133,7 @@ export default function App() {
               />
               <Route path="/visualizer/prims" element={<PrimsVisualizerPage />} />
               <Route path="/visualizer/astar" element={<AStarPage />} />
+              <Route path="/visualizer/array-traversal" element={<ArrayTraversalPage />} />
               <Route
                 path="/visualizer/selection-sort"
                 element={
@@ -246,7 +248,7 @@ export default function App() {
               <Route path="/visualizer/dfs" element={<GraphVisualizerPage />} />
               <Route path="/visualizer/topological-sort" element={<TopologicalSortPage />} />
               <Route path="/visualizer/huffman-coding" element={<HuffmanCodingPage />} />
-<Route path="/visualizer/floyd-warshall" element={<FloydWarshallPage />} />
+              <Route path="/visualizer/floyd-warshall" element={<FloydWarshallPage />} />
               <Route path="/visualizer/stack" element={<StackVisualizerPage />} />
               <Route path="/compare" element={<ComparisonPage />} />
             </Routes>
