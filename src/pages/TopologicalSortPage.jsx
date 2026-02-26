@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -79,6 +79,12 @@ function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function formatElapsed(seconds) {
+    const mins = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const secs = (seconds % 60).toString().padStart(2, "0");
+    return `${mins}:${secs}`;
+}
+
 export default function TopologicalSortPage() {
     const navigate = useNavigate();
     useDocumentTitle('Topological Sort');
@@ -88,6 +94,7 @@ export default function TopologicalSortPage() {
     const [runStatus, setRunStatus] = useState("Idle");
     const [isRunning, setIsRunning] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
+    const [elapsedSeconds, setElapsedSeconds] = useState(0);
     const [statusMessage, setStatusMessage] = useState("Generate a DAG to start.");
     const [selectedLanguage, setSelectedLanguage] = useState("C++");
     const [copyState, setCopyState] = useState("idle");
@@ -98,6 +105,11 @@ export default function TopologicalSortPage() {
     const [inDegreesMap, setInDegreesMap] = useState({});
 
     const activeCode = selectedLanguage === "C++" ? topologicalSortCPP : (selectedLanguage === "Java" ? topologicalSortJava : (selectedLanguage === "Python" ? topologicalSortPython : topologicalSortJS));
+    const progress = useMemo(() => {
+        if (runStatus === "Completed") return 100;
+        if (graph.nodes.length === 0) return 0;
+        return Math.round((topoResult.length / graph.nodes.length) * 100);
+    }, [runStatus, topoResult.length, graph.nodes.length]);
 
     const getFileExtension = (lang) => {
         switch (lang) {
@@ -118,6 +130,14 @@ export default function TopologicalSortPage() {
         handleNewGraph(nodeCount);
     }, []);
 
+    useEffect(() => {
+        if (runStatus !== "Running" || isPaused) return undefined;
+        const timer = setInterval(() => {
+            setElapsedSeconds((prev) => prev + 1);
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [runStatus, isPaused]);
+
     const handleNewGraph = (count = nodeCount) => {
         stopSignal.current = true;
         pauseSignal.current = false;
@@ -125,6 +145,7 @@ export default function TopologicalSortPage() {
         setIsPaused(false);
         setRunStatus("Idle");
         setStatusMessage("New DAG generated.");
+        setElapsedSeconds(0);
         setTopoResult([]);
         setQueueIds([]);
 
@@ -145,6 +166,7 @@ export default function TopologicalSortPage() {
         setIsRunning(false);
         setIsPaused(false);
         setRunStatus("Idle");
+        setElapsedSeconds(0);
 
         // Recalculate original in-degrees
         let degMap = {};
@@ -181,6 +203,7 @@ export default function TopologicalSortPage() {
 
         setIsRunning(true);
         setRunStatus("Running");
+        setElapsedSeconds(0);
         stopSignal.current = false;
         pauseSignal.current = false;
 
@@ -377,17 +400,47 @@ export default function TopologicalSortPage() {
                         </div>
                         <div className="mb-4 flex flex-wrap items-center gap-2">
                             <span className="rounded-full border border-emerald-400/25 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-200">Graph</span>
-                            <span className="rounded-full border border-slate-400/25 bg-slate-500/10 px-3 py-1 text-xs font-semibold tracking-wider text-slate-300">Time: <span className="text-emerald-300 font-mono">O(V + E)</span></span>
                             <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${runStatusStyleMap[runStatus]}`}>{runStatus}</span>
+                            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-200">{formatElapsed(elapsedSeconds)}</span>
+                            <span className="rounded-full border border-slate-400/25 bg-slate-500/10 px-3 py-1 text-xs font-semibold tracking-wider text-slate-300">Time: <span className="text-emerald-300 font-mono">O(V + E)</span></span>
+                            <span className="rounded-full border border-slate-400/25 bg-slate-500/10 px-3 py-1 text-xs font-semibold tracking-wider text-slate-300">Space: <span className="text-emerald-300 font-mono">O(V)</span></span>
                         </div>
                         <h1 className="font-display text-3xl font-black text-white sm:text-4xl lg:text-5xl">Topological Sort</h1>
                         <p className="mt-3 text-sm text-slate-300 sm:text-base max-w-2xl">Linear ordering of vertices in a Directed Acyclic Graph (DAG) such that for every directed edge u→v, vertex u comes before v.</p>
+                        <div className="mt-6 w-full max-w-md">
+                            <div className="mb-2 flex justify-between text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                                <span>Traversal Progress</span>
+                                <span>{progress}%</span>
+                            </div>
+                            <div className="h-2 w-full overflow-hidden rounded-full bg-slate-700/50">
+                                <motion.div
+                                    className="h-full bg-gradient-to-r from-emerald-500 to-cyan-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${progress}%` }}
+                                    transition={{ duration: 0.4 }}
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="rounded-2xl border border-white/10 bg-slate-900/55 p-5 min-w-[250px] w-full md:w-72 flex flex-col justify-between">
                         <div>
                             <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-300"><Activity size={14} className="text-emerald-400" /> Status</p>
                             <p className="mt-2 text-sm font-semibold text-white min-h-[40px]">{statusMessage}</p>
+                        </div>
+                        <div className="mt-4 grid grid-cols-3 gap-2">
+                            <div className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-center">
+                                <p className="text-[10px] uppercase tracking-widest text-slate-400">Sorted</p>
+                                <p className="mt-1 text-sm font-bold text-emerald-200">{topoResult.length}/{graph.nodes.length || 0}</p>
+                            </div>
+                            <div className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-center">
+                                <p className="text-[10px] uppercase tracking-widest text-slate-400">Queue</p>
+                                <p className="mt-1 text-sm font-bold text-cyan-200">{queueIds.length}</p>
+                            </div>
+                            <div className="rounded-xl border border-white/10 bg-white/5 p-2.5 text-center">
+                                <p className="text-[10px] uppercase tracking-widest text-slate-400">Delay</p>
+                                <p className="mt-1 text-sm font-bold text-slate-100">{speed}ms</p>
+                            </div>
                         </div>
 
                         {/* Queue Display */}
@@ -467,6 +520,27 @@ export default function TopologicalSortPage() {
                 {/* Visualization Area */}
                 <section className="rounded-3xl border border-white/10 bg-slate-900/40 p-1 shadow-2xl relative overflow-hidden min-h-[500px]" ref={containerRef}>
                     <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: "radial-gradient(#94a3b8 1px, transparent 1px)", backgroundSize: "20px 20px" }}></div>
+                    <div className="absolute right-3 top-3 z-20 rounded-xl border border-white/10 bg-slate-900/80 px-3 py-2 backdrop-blur">
+                        <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">Legend</p>
+                        <div className="space-y-1.5 text-[10px] text-slate-300">
+                            <div className="flex items-center gap-2">
+                                <span className="h-2.5 w-2.5 rounded-full bg-slate-600" />
+                                <span>Unvisited Node</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
+                                <span>Processing Node</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                                <span>Sorted Node</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="h-2.5 w-2.5 rounded-full bg-cyan-500" />
+                                <span>Ready in Queue</span>
+                            </div>
+                        </div>
+                    </div>
 
                     {/* SVG for Edges with Arrowheads */}
                     <svg className="w-full h-full absolute inset-0 pointer-events-none">

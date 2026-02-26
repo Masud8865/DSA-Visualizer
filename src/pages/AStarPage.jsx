@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { 
-    Play, RotateCcw, Shuffle, Pause, Target, Waypoints, Activity, Code2, Copy, Download, Zap, Paintbrush, MoveDiagonal, Info
+    Play, RotateCcw, Shuffle, Pause, Target, Waypoints, Activity, Code2, Copy, Download, Zap, Paintbrush, Info
 } from 'lucide-react';
 import { astar, astarCPP, astarJava, astarPython, astarJS } from '../algorithms/astar';
 import { renderHighlightedCode } from '../utils/codeHighlight';
@@ -23,10 +23,24 @@ const createInitialGrid = () => {
     return grid;
 };
 
+const runStatusStyleMap = {
+    Idle: 'border-white/15 bg-white/5 text-slate-200',
+    Running: 'border-cyan-400/30 bg-cyan-500/10 text-cyan-100',
+    Paused: 'border-amber-400/30 bg-amber-500/10 text-amber-100',
+    Completed: 'border-emerald-400/30 bg-emerald-500/10 text-emerald-100',
+};
+
+function formatElapsed(seconds) {
+    const mins = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const secs = (seconds % 60).toString().padStart(2, "0");
+    return `${mins}:${secs}`;
+}
+
 export default function AStarPage() {
     const [grid, setGrid] = useState(createInitialGrid());
     const [runStatus, setRunStatus] = useState('Idle');
     const [isPaused, setIsPaused] = useState(false);
+    const [elapsedSeconds, setElapsedSeconds] = useState(0);
     const [speed, setSpeed] = useState(40);
     const [heuristic, setHeuristic] = useState('Manhattan');
     const [allowDiagonal, setAllowDiagonal] = useState(false);
@@ -53,13 +67,29 @@ export default function AStarPage() {
     const stats = useMemo(() => {
         const total = ROWS * COLS;
         const walls = grid.flat().filter(c => c.status === 'wall').length;
+        const weights = grid.flat().filter(c => c.status === 'weight').length;
         const explored = grid.flat().filter(c => c.status === 'visited' || c.status === 'processing').length;
+        const pathLength = grid.flat().filter(c => c.status === 'path').length;
         const available = total - walls;
         const efficiency = available > 0 ? Math.max(0, 100 - ((explored / available) * 100)).toFixed(1) : 0;
-        return { explored, efficiency };
+        return { explored, walls, weights, available, pathLength, efficiency };
     }, [grid]);
+    const runtimeStatus = runStatus === 'Running' && isPaused ? 'Paused' : runStatus;
+    const progress = useMemo(() => {
+        if (runtimeStatus === 'Completed') return 100;
+        if (stats.available <= 0) return 0;
+        return Math.min(Math.round((stats.explored / stats.available) * 100), 100);
+    }, [runtimeStatus, stats.explored, stats.available]);
 
     useEffect(() => { pauseSignal.current = isPaused; }, [isPaused]);
+
+    useEffect(() => {
+        if (runStatus !== 'Running' || isPaused) return undefined;
+        const timer = setInterval(() => {
+            setElapsedSeconds((prev) => prev + 1);
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [runStatus, isPaused]);
 
     // Mouse Interaction Handlers
     const handleMouseDown = (r, c) => {
@@ -111,6 +141,8 @@ export default function AStarPage() {
 
     const handleRun = async () => {
         stopSignal.current = false;
+        setIsPaused(false);
+        setElapsedSeconds(0);
         setRunStatus('Running');
         const success = await astar(grid, startPos, targetPos, setGrid, speed, stopSignal, pauseSignal, setStatusMessage, heuristic, allowDiagonal);
         setRunStatus(success ? 'Completed' : 'Idle');
@@ -120,6 +152,7 @@ export default function AStarPage() {
         stopSignal.current = true;
         setRunStatus('Idle');
         setIsPaused(false);
+        setElapsedSeconds(0);
         const newGrid = createInitialGrid();
         if (keepWalls) {
             grid.forEach((row, r) => row.forEach((cell, c) => {
@@ -134,6 +167,7 @@ export default function AStarPage() {
         stopSignal.current = true;
         setRunStatus('Idle');
         setIsPaused(false);
+        setElapsedSeconds(0);
 
         const newGrid = createInitialGrid();
         for (let r = 0; r < ROWS; r++) {
@@ -203,19 +237,42 @@ export default function AStarPage() {
             <motion.section initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="mb-6 overflow-hidden rounded-3xl border border-white/10 bg-slate-800/40 p-6 shadow-2xl backdrop-blur">
                 <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
                     <div>
-                        <div className="mb-4 flex items-center gap-2">
+                        <div className="mb-4 flex flex-wrap items-center gap-2">
                             <span className="rounded-full bg-blue-500/20 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-blue-300 border border-blue-500/20">Pathfinder</span>
                             <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-300 border border-emerald-500/20">Search Efficiency: {stats.efficiency}%</span>
+                            <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${runStatusStyleMap[runtimeStatus]}`}>{runtimeStatus}</span>
+                            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-200">{formatElapsed(elapsedSeconds)}</span>
+                            <span className="rounded-full border border-slate-400/25 bg-slate-500/10 px-3 py-1 text-xs font-semibold tracking-wider text-slate-300">Time: <span className="text-cyan-300 font-mono">O(E)</span></span>
+                            <span className="rounded-full border border-slate-400/25 bg-slate-500/10 px-3 py-1 text-xs font-semibold tracking-wider text-slate-300">Space: <span className="text-cyan-300 font-mono">O(V)</span></span>
                         </div>
                         <h1 className="text-3xl font-black text-white sm:text-5xl">A* Search Algorithm</h1>
                         <p className="mt-3 text-sm text-slate-300 leading-relaxed max-w-2xl">
                             A* is an <strong>informed search</strong>. It combines actual cost (g) and estimated cost (h) to find the shortest path. Unlike Dijkstra, it intelligently navigates complex terrain costs (weights) and heuristics.
                         </p>
+                        <div className="mt-6 w-full max-w-md">
+                            <div className="mb-2 flex justify-between text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                                <span>Search Progress</span>
+                                <span>{progress}%</span>
+                            </div>
+                            <div className="h-2 w-full overflow-hidden rounded-full bg-slate-700/50">
+                                <motion.div
+                                    className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${progress}%` }}
+                                    transition={{ duration: 0.35 }}
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="rounded-2xl border border-white/10 bg-slate-900/55 p-5">
                         <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400"><Activity size={14} className="text-blue-400" /> Live Diagnostics</p>
-                        <div className="mt-4 grid grid-cols-2 gap-3">
+                        <div className="mt-4 space-y-3">
+                            <div className="rounded-xl bg-white/5 p-3 border border-white/5">
+                                <p className="text-[10px] text-slate-500 uppercase font-bold">Status Message</p>
+                                <p className="text-sm font-semibold text-white min-h-[36px]">{statusMessage}</p>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
                             <div className="rounded-xl bg-white/5 p-3 border border-white/5">
                                 <p className="text-[10px] text-slate-500 uppercase font-bold">Nodes Explored</p>
                                 <p className="text-lg font-bold text-white">{stats.explored}</p>
@@ -223,6 +280,15 @@ export default function AStarPage() {
                             <div className="rounded-xl bg-white/5 p-3 border border-white/5">
                                 <p className="text-[10px] text-slate-500 uppercase font-bold">Heuristic Setup</p>
                                 <p className="text-lg font-bold text-cyan-400 truncate">{heuristic}</p>
+                            </div>
+                            <div className="rounded-xl bg-white/5 p-3 border border-white/5">
+                                <p className="text-[10px] text-slate-500 uppercase font-bold">Path Length</p>
+                                <p className="text-lg font-bold text-emerald-300">{stats.pathLength || "-"}</p>
+                            </div>
+                            <div className="rounded-xl bg-white/5 p-3 border border-white/5">
+                                <p className="text-[10px] text-slate-500 uppercase font-bold">Delay</p>
+                                <p className="text-lg font-bold text-cyan-200">{speed}ms</p>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -340,11 +406,14 @@ export default function AStarPage() {
                     </div>
 
                     {/* Extended Legend */}
-                    <div className="absolute bottom-4 right-4 flex gap-4 rounded-full bg-slate-950/80 px-4 py-2 backdrop-blur border border-white/10">
+                    <div className="absolute bottom-4 right-4 flex max-w-[calc(100%-1.5rem)] flex-wrap gap-3 rounded-xl bg-slate-950/80 px-3 py-2 backdrop-blur border border-white/10">
+                        <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-blue-500" /><span className="text-[9px] font-bold text-slate-400">Start</span></div>
+                        <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-emerald-400" /><span className="text-[9px] font-bold text-slate-400">Target</span></div>
+                        <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-cyan-400/70" /><span className="text-[9px] font-bold text-slate-400">Processing</span></div>
                         <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-emerald-500" /><span className="text-[9px] font-bold text-slate-400">Path</span></div>
                         <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-blue-500/40" /><span className="text-[9px] font-bold text-slate-400">Visited</span></div>
                         <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-slate-700" /><span className="text-[9px] font-bold text-slate-400">Wall</span></div>
-                        <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-amber-900/60" /><span className="text-[9px] font-bold text-slate-400">Mud (Weight)</span></div>
+                        <div className="flex items-center gap-1.5"><div className="h-2 w-2 rounded-full bg-amber-900/60" /><span className="text-[9px] font-bold text-slate-400">Mud</span></div>
                     </div>
                 </main>
             </div>
