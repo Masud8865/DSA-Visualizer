@@ -22,6 +22,7 @@ import {
 // Import the logic and code snippets from your prims.js
 import { prims, primsCPP, primsJava, primsPython, primsJS } from '../algorithms/prims';
 import HotkeysHint from "../components/HotkeysHint";
+import { shouldSkipHotkeyTarget, useStableHotkeys } from "../hooks/useStableHotkeys";
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 450;
@@ -105,12 +106,19 @@ const generateWeightedGraph = (nodeCount = 8) => {
     return { nodes, edges };
 };
 
+function formatElapsed(seconds) {
+    const mins = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const secs = (seconds % 60).toString().padStart(2, "0");
+    return `${mins}:${secs}`;
+}
+
 export default function PrimsVisualizerPage() {
     const [graph, setGraph] = useState(() => generateWeightedGraph(8));
     const [startNodeId, setStartNodeId] = useState(0);
     const [speed, setSpeed] = useState(600);
     const [runStatus, setRunStatus] = useState('Idle');
     const [isPaused, setIsPaused] = useState(false);
+    const [elapsedSeconds, setElapsedSeconds] = useState(0);
     const [statusMessage, setStatusMessage] = useState("Select a root node and launch the visualizer.");
     const [selectedLanguage, setSelectedLanguage] = useState("C++");
     const [copyState, setCopyState] = useState('idle');
@@ -131,10 +139,19 @@ export default function PrimsVisualizerPage() {
 
     useEffect(() => { pauseSignal.current = isPaused; }, [isPaused]);
 
+    useEffect(() => {
+        if (runStatus !== "Running" || isPaused) return undefined;
+        const timer = setInterval(() => {
+            setElapsedSeconds((prev) => prev + 1);
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [runStatus, isPaused]);
+
     const handleReset = () => {
         stopSignal.current = true;
         setRunStatus('Idle');
         setIsPaused(false);
+        setElapsedSeconds(0);
         setProcessingNode(null);
         setStatusMessage("Graph reset.");
         setGraph(prev => ({
@@ -149,6 +166,7 @@ export default function PrimsVisualizerPage() {
         setGraph(generateWeightedGraph(count));
         setRunStatus('Idle');
         setIsPaused(false);
+        setElapsedSeconds(0);
         setProcessingNode(null);
         setStartNodeId(0);
         setStatusMessage("New graph generated.");
@@ -160,6 +178,7 @@ export default function PrimsVisualizerPage() {
         
         stopSignal.current = false;
         setRunStatus('Running');
+        setElapsedSeconds(0);
 
         const wrapperSetGraph = (data) => {
             const proc = data.nodes.find(n => n.status === 'processing');
@@ -199,35 +218,39 @@ export default function PrimsVisualizerPage() {
         a.click();
     };
 
-    useEffect(() => {
-        const handleHotkeys = (e) => {
-            const tag = e.target?.tagName?.toLowerCase();
-            if (tag === "input" || tag === "textarea" || tag === "select") return;
+    useStableHotkeys((e) => {
+        if (shouldSkipHotkeyTarget(e.target)) return;
 
-            if (e.code === "Space") {
-                e.preventDefault();
-                if (runStatus === "Idle" || runStatus === "Completed") {
-                    runAlgorithm();
-                } else {
-                    setIsPaused((prev) => !prev);
-                }
-                return;
-            }
+        const key = e.key?.toLowerCase();
+        const isHotkey = e.code === "Space" || key === "r" || key === "n";
+        if (!isHotkey) return;
 
-            const key = e.key?.toLowerCase();
-            if (key === "r") {
-                e.preventDefault();
-                handleReset();
-            }
-            if (key === "n") {
-                e.preventDefault();
-                if (runStatus !== "Running") handleGenerateNewGraph();
-            }
-        };
+        if (e.repeat) {
+            e.preventDefault();
+            return;
+        }
 
-        window.addEventListener("keydown", handleHotkeys);
-        return () => window.removeEventListener("keydown", handleHotkeys);
-    }, [runStatus, runAlgorithm, handleReset, handleGenerateNewGraph]);
+        if (e.code === "Space") {
+            e.preventDefault();
+            if (runStatus === "Idle" || runStatus === "Completed") {
+                runAlgorithm();
+            } else {
+                setIsPaused((prev) => !prev);
+            }
+            return;
+        }
+
+        if (key === "r") {
+            e.preventDefault();
+            handleReset();
+            return;
+        }
+
+        if (key === "n") {
+            e.preventDefault();
+            if (runStatus !== "Running") handleGenerateNewGraph();
+        }
+    });
 
     return (
         <div className="font-body relative mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:py-12">
@@ -248,6 +271,15 @@ export default function PrimsVisualizerPage() {
                             </span>
                             <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${runStatusStyleMap[runStatus]}`}>
                                 {runStatus}
+                            </span>
+                            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-200">
+                                {formatElapsed(elapsedSeconds)}
+                            </span>
+                            <span className="rounded-full border border-slate-400/25 bg-slate-500/10 px-3 py-1 text-xs font-semibold tracking-wider text-slate-300">
+                                Time: <span className="text-emerald-300 font-mono">O(E log V)</span>
+                            </span>
+                            <span className="rounded-full border border-slate-400/25 bg-slate-500/10 px-3 py-1 text-xs font-semibold tracking-wider text-slate-300">
+                                Space: <span className="text-emerald-300 font-mono">O(V)</span>
                             </span>
                         </div>
                         <h1 className="font-display text-3xl font-black text-white sm:text-4xl lg:text-5xl">Prim's Algorithm</h1>
@@ -294,6 +326,16 @@ export default function PrimsVisualizerPage() {
                                 <div className="rounded-xl bg-white/5 p-3 border border-white/5">
                                     <p className="text-[11px] text-slate-400 font-bold uppercase">Complexity</p>
                                     <p className="text-lg font-bold text-cyan-200">O(E log V)</p>
+                                </div>
+                                <div className="rounded-xl bg-white/5 p-3 border border-white/5">
+                                    <p className="text-[11px] text-slate-400 font-bold uppercase">Visited</p>
+                                    <p className="text-lg font-bold text-emerald-200">
+                                        {graph.nodes.filter((n) => n.status === "visited").length}/{graph.nodes.length}
+                                    </p>
+                                </div>
+                                <div className="rounded-xl bg-white/5 p-3 border border-white/5">
+                                    <p className="text-[11px] text-slate-400 font-bold uppercase">Delay</p>
+                                    <p className="text-lg font-bold text-cyan-100">{speed}ms</p>
                                 </div>
                             </div>
                         </div>

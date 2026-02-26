@@ -25,6 +25,7 @@ import {
 } from "../algorithms/boyerMooreVoting";
 import { renderHighlightedCode } from "../utils/codeHighlight";
 import HotkeysHint from "../components/HotkeysHint";
+import { shouldSkipHotkeyTarget, useStableHotkeys } from "../hooks/useStableHotkeys";
 
 const runStatusStyleMap = {
     Idle: "border-white/15 bg-white/5 text-slate-200",
@@ -99,40 +100,44 @@ export default function BoyerMoorePage() {
         return () => { if (timerRef.current) clearInterval(timerRef.current); };
     }, [runStatus, isPaused, steps.length, speed]);
 
-    useEffect(() => {
-        const handleHotkeys = (e) => {
-            const tag = e.target?.tagName?.toLowerCase();
-            if (tag === "input" || tag === "textarea" || tag === "select") return;
+    useStableHotkeys((e) => {
+        if (shouldSkipHotkeyTarget(e.target)) return;
 
-            if (e.code === "Space") {
-                e.preventDefault();
-                if (runStatus === "Running" || runStatus === "Paused") {
-                    setIsPaused((prev) => {
-                        const next = !prev;
-                        setRunStatus(next ? "Paused" : "Running");
-                        return next;
-                    });
-                    return;
-                }
-                if (runStatus === "Completed") handleReset();
-                setTimeout(runAlgorithm, 50);
+        const key = e.key?.toLowerCase();
+        const isHotkey = e.code === "Space" || key === "r" || key === "n";
+        if (!isHotkey) return;
+
+        if (e.repeat) {
+            e.preventDefault();
+            return;
+        }
+
+        if (e.code === "Space") {
+            e.preventDefault();
+            if (runStatus === "Running" || runStatus === "Paused") {
+                setIsPaused((prev) => {
+                    const next = !prev;
+                    setRunStatus(next ? "Paused" : "Running");
+                    return next;
+                });
                 return;
             }
+            if (runStatus === "Completed") handleReset();
+            setTimeout(runAlgorithm, 50);
+            return;
+        }
 
-            const key = e.key?.toLowerCase();
-            if (key === "r") {
-                e.preventDefault();
-                handleReset();
-            }
-            if (key === "n") {
-                e.preventDefault();
-                if (runStatus !== "Running") handleGenerateNewArray();
-            }
-        };
+        if (key === "r") {
+            e.preventDefault();
+            handleReset();
+            return;
+        }
 
-        window.addEventListener("keydown", handleHotkeys);
-        return () => window.removeEventListener("keydown", handleHotkeys);
-    }, [runStatus, handleGenerateNewArray, handleReset, runAlgorithm]);
+        if (key === "n") {
+            e.preventDefault();
+            if (runStatus !== "Running") handleGenerateNewArray();
+        }
+    });
 
     const handleCopyCode = async () => {
         await navigator.clipboard.writeText(activeCode);
