@@ -39,6 +39,7 @@ import { selectionSort } from "../algorithms/selectionSort";
 import { mergeSort } from "../algorithms/mergeSort";
 import CustomInputModal from "../components/CustomInputModal";
 import AlgorithmExplanationPanel from "../components/AlgorithmExplanationPanel";
+import StepController from "../components/StepController";
 
 
 const algorithmMap = {
@@ -229,7 +230,16 @@ export default function VisualizerPage({
     operation,
     variables,
     updateStepInfo,
-    resetStepInfo
+    resetStepInfo,
+    // Step mode functions
+    stepMode,
+    setStepMode,
+    toggleStepMode,
+    stepForward,
+    stepBackward,
+    goToStep,
+    precomputedSteps,
+    precomputedStepsRef
   } = useVisualizer();
 
   const navigate = useNavigate();
@@ -380,10 +390,24 @@ export default function VisualizerPage({
         const keys = Object.keys(colorThemes);
         setColorTheme(keys[(keys.indexOf(colorTheme) + 1) % keys.length]);
       }
+      // Step navigation shortcuts
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        stepBackward();
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        stepForward();
+      }
+      if (e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        toggleStepMode();
+      }
     };
     window.addEventListener("keydown", handleHotkeys);
     return () => window.removeEventListener("keydown", handleHotkeys);
-  }, [isSorting, isPaused, colorTheme, array.length]);
+  }, [isSorting, isPaused, colorTheme, array.length, stepForward, stepBackward, toggleStepMode]);
+
 
   const handleGenerateNew = (nextSize = arraySize) => {
     stopSignal.current = true;
@@ -698,7 +722,9 @@ export default function VisualizerPage({
                 <Keyboard size={12} /> Shortcuts
               </p>
               <p>Space: Start/Pause | R: Reset | N: New</p>
+              <p>←: Prev Step | →: Next Step | S: Step Mode</p>
             </div>
+
           </aside>
 
           {/* Algorithm Explanation Panel */}
@@ -709,6 +735,19 @@ export default function VisualizerPage({
             operation={operation}
             variables={variables}
             isRunning={isSorting || isPaused}
+          />
+
+          <StepController
+            currentStep={currentStep}
+            totalSteps={totalSteps}
+            stepMode={stepMode}
+            onToggleStepMode={toggleStepMode}
+            onStepForward={stepForward}
+            onStepBackward={stepBackward}
+            onGoToStep={goToStep}
+            isSorting={isSorting}
+            isPaused={isPaused}
+            precomputedSteps={precomputedSteps}
           />
         </div>
 
