@@ -6,6 +6,7 @@ import {
 import { astar, astarCPP, astarJava, astarPython, astarJS } from '../algorithms/astar';
 import { renderHighlightedCode } from '../utils/codeHighlight';
 import HotkeysHint from "../components/HotkeysHint";
+import { shouldSkipHotkeyTarget, useStableHotkeys } from "../hooks/useStableHotkeys";
 
 const ROWS = 18;
 const COLS = 34;
@@ -151,35 +152,39 @@ export default function AStarPage() {
         setStatusMessage("New random terrain generated.");
     };
 
-    useEffect(() => {
-        const handleHotkeys = (e) => {
-            const tag = e.target?.tagName?.toLowerCase();
-            if (tag === "input" || tag === "textarea" || tag === "select") return;
+    useStableHotkeys((e) => {
+        if (shouldSkipHotkeyTarget(e.target)) return;
 
-            if (e.code === "Space") {
-                e.preventDefault();
-                if (runStatus === 'Idle' || runStatus === 'Completed') {
-                    handleRun();
-                } else {
-                    setIsPaused((prev) => !prev);
-                }
-                return;
-            }
+        const key = e.key?.toLowerCase();
+        const isHotkey = e.code === "Space" || key === "r" || key === "n";
+        if (!isHotkey) return;
 
-            const key = e.key?.toLowerCase();
-            if (key === "r") {
-                e.preventDefault();
-                resetGrid(true);
-            }
-            if (key === "n") {
-                e.preventDefault();
-                generateRandomTerrain();
-            }
-        };
+        if (e.repeat) {
+            e.preventDefault();
+            return;
+        }
 
-        window.addEventListener("keydown", handleHotkeys);
-        return () => window.removeEventListener("keydown", handleHotkeys);
-    }, [runStatus, handleRun, resetGrid, generateRandomTerrain]);
+        if (e.code === "Space") {
+            e.preventDefault();
+            if (runStatus === 'Idle' || runStatus === 'Completed') {
+                handleRun();
+            } else {
+                setIsPaused((prev) => !prev);
+            }
+            return;
+        }
+
+        if (key === "r") {
+            e.preventDefault();
+            resetGrid(true);
+            return;
+        }
+
+        if (key === "n") {
+            e.preventDefault();
+            generateRandomTerrain();
+        }
+    });
 
     const handleDownloadCode = () => {
         const element = document.createElement("a");

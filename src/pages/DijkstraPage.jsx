@@ -21,6 +21,7 @@ import {
 import { dijkstraCPP, dijkstraJava, dijkstraPython, dijkstraJS, generateDijkstraSteps } from '../algorithms/dijkstra';
 import { renderHighlightedCode } from '../utils/codeHighlight';
 import HotkeysHint from "../components/HotkeysHint";
+import { shouldSkipHotkeyTarget, useStableHotkeys } from "../hooks/useStableHotkeys";
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 450;
@@ -191,36 +192,40 @@ export default function DijkstraPage() {
         URL.revokeObjectURL(url);
     };
 
-    useEffect(() => {
-        const handleHotkeys = (e) => {
-            const tag = e.target?.tagName?.toLowerCase();
-            if (tag === "input" || tag === "textarea" || tag === "select") return;
+    useStableHotkeys((e) => {
+        if (shouldSkipHotkeyTarget(e.target)) return;
 
-            if (e.code === "Space") {
-                e.preventDefault();
-                if (runStatus === 'Idle' || runStatus === 'Completed') {
-                    if (runStatus === 'Completed') handleReset();
-                    setTimeout(runAlgorithm, 100);
-                } else {
-                    setIsPaused((prev) => !prev);
-                }
-                return;
-            }
+        const key = e.key?.toLowerCase();
+        const isHotkey = e.code === "Space" || key === "r" || key === "n";
+        if (!isHotkey) return;
 
-            const key = e.key?.toLowerCase();
-            if (key === "r") {
-                e.preventDefault();
-                handleReset();
-            }
-            if (key === "n") {
-                e.preventDefault();
-                if (runStatus === "Idle") handleGenerateNewGraph();
-            }
-        };
+        if (e.repeat) {
+            e.preventDefault();
+            return;
+        }
 
-        window.addEventListener("keydown", handleHotkeys);
-        return () => window.removeEventListener("keydown", handleHotkeys);
-    }, [runStatus, handleReset, runAlgorithm, handleGenerateNewGraph]);
+        if (e.code === "Space") {
+            e.preventDefault();
+            if (runStatus === 'Idle' || runStatus === 'Completed') {
+                if (runStatus === 'Completed') handleReset();
+                setTimeout(runAlgorithm, 100);
+            } else {
+                setIsPaused((prev) => !prev);
+            }
+            return;
+        }
+
+        if (key === "r") {
+            e.preventDefault();
+            handleReset();
+            return;
+        }
+
+        if (key === "n") {
+            e.preventDefault();
+            if (runStatus === "Idle") handleGenerateNewGraph();
+        }
+    });
 
 
     return (

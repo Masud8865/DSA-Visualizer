@@ -18,6 +18,7 @@ import {
 import { topologicalSortCPP, topologicalSortJava, topologicalSortPython, topologicalSortJS } from '../algorithms/topologicalSort';
 import { renderHighlightedCode } from '../utils/codeHighlight';
 import HotkeysHint from "../components/HotkeysHint";
+import { shouldSkipHotkeyTarget, useStableHotkeys } from "../hooks/useStableHotkeys";
 
 const runStatusStyleMap = {
     Idle: 'border-white/15 bg-white/5 text-slate-200',
@@ -296,43 +297,47 @@ export default function TopologicalSortPage() {
         URL.revokeObjectURL(url);
     };
 
-    useEffect(() => {
-        const handleHotkeys = (e) => {
-            const tag = e.target?.tagName?.toLowerCase();
-            if (tag === "input" || tag === "textarea" || tag === "select") return;
+    useStableHotkeys((e) => {
+        if (shouldSkipHotkeyTarget(e.target)) return;
 
-            if (e.code === "Space") {
-                e.preventDefault();
-                if (isRunning) {
-                    if (isPaused) {
-                        pauseSignal.current = false;
-                        setIsPaused(false);
-                        setRunStatus("Running");
-                    } else {
-                        pauseSignal.current = true;
-                        setIsPaused(true);
-                        setRunStatus("Paused");
-                    }
+        const key = e.key?.toLowerCase();
+        const isHotkey = e.code === "Space" || key === "r" || key === "n";
+        if (!isHotkey) return;
+
+        if (e.repeat) {
+            e.preventDefault();
+            return;
+        }
+
+        if (e.code === "Space") {
+            e.preventDefault();
+            if (isRunning) {
+                if (isPaused) {
+                    pauseSignal.current = false;
+                    setIsPaused(false);
+                    setRunStatus("Running");
                 } else {
-                    runTopologicalSort();
+                    pauseSignal.current = true;
+                    setIsPaused(true);
+                    setRunStatus("Paused");
                 }
-                return;
+            } else {
+                runTopologicalSort();
             }
+            return;
+        }
 
-            const key = e.key?.toLowerCase();
-            if (key === "r") {
-                e.preventDefault();
-                handleReset();
-            }
-            if (key === "n") {
-                e.preventDefault();
-                handleNewGraph();
-            }
-        };
+        if (key === "r") {
+            e.preventDefault();
+            handleReset();
+            return;
+        }
 
-        window.addEventListener("keydown", handleHotkeys);
-        return () => window.removeEventListener("keydown", handleHotkeys);
-    }, [isRunning, isPaused, runTopologicalSort, handleReset, handleNewGraph]);
+        if (key === "n") {
+            e.preventDefault();
+            handleNewGraph();
+        }
+    });
 
     // Node Colors
     const getNodeColor = (status) => {

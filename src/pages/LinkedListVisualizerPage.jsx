@@ -28,6 +28,7 @@ import {
 } from "../algorithms/linkedList";
 import { renderHighlightedCode } from "../utils/codeHighlight";
 import HotkeysHint from "../components/HotkeysHint";
+import { shouldSkipHotkeyTarget, useStableHotkeys } from "../hooks/useStableHotkeys";
 
 const EMPTY_MARKERS = {
   head: null,
@@ -457,42 +458,37 @@ export default function LinkedListVisualizerPage() {
     });
   }, [focusIndex, isRunning]);
 
-  useEffect(() => {
-    const handleHotkeys = (e) => {
-      const tag = e.target?.tagName?.toLowerCase();
-      if (tag === "input" || tag === "textarea" || tag === "select") return;
+  useStableHotkeys((e) => {
+    if (shouldSkipHotkeyTarget(e.target)) return;
 
-      if (e.code === "Space") {
-        e.preventDefault();
-        if (!isRunning) handleStart();
-        else if (isPaused) handleResume();
-        else handlePause();
-        return;
-      }
+    const key = e.key?.toLowerCase();
+    const isHotkey = e.code === "Space" || key === "r" || key === "n";
+    if (!isHotkey) return;
 
-      const key = e.key?.toLowerCase();
-      if (key === "r") {
-        e.preventDefault();
-        handleReset();
-      }
-      if (key === "n") {
-        e.preventDefault();
-        generateNewList(listSize);
-      }
-    };
+    if (e.repeat) {
+      e.preventDefault();
+      return;
+    }
 
-    window.addEventListener("keydown", handleHotkeys);
-    return () => window.removeEventListener("keydown", handleHotkeys);
-  }, [
-    generateNewList,
-    handlePause,
-    handleReset,
-    handleResume,
-    handleStart,
-    isPaused,
-    isRunning,
-    listSize,
-  ]);
+    if (e.code === "Space") {
+      e.preventDefault();
+      if (!isRunning) handleStart();
+      else if (isPaused) handleResume();
+      else handlePause();
+      return;
+    }
+
+    if (key === "r") {
+      e.preventDefault();
+      handleReset();
+      return;
+    }
+
+    if (key === "n") {
+      e.preventDefault();
+      generateNewList(listSize);
+    }
+  });
 
   return (
     <div className="font-body relative mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:py-12">

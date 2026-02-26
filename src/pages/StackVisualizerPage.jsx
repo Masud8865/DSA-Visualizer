@@ -28,6 +28,7 @@ import {
 } from "../algorithms/stack";
 import { renderHighlightedCode } from "../utils/codeHighlight";
 import HotkeysHint from "../components/HotkeysHint";
+import { shouldSkipHotkeyTarget, useStableHotkeys } from "../hooks/useStableHotkeys";
 
 const runStatusStyleMap = {
   Idle: "border-white/15 bg-white/5 text-slate-200",
@@ -414,44 +415,40 @@ export default function StackVisualizerPage() {
     }
   }, [inputValue, isRunning, handlePush]);
 
-  useEffect(() => {
-    const handleHotkeys = (e) => {
-      const tag = e.target?.tagName?.toLowerCase();
-      if (tag === "input" || tag === "textarea" || tag === "select") return;
+  useStableHotkeys((e) => {
+    if (shouldSkipHotkeyTarget(e.target)) return;
 
-      if (e.code === "Space") {
-        e.preventDefault();
-        if (isRunning) {
-          if (isPaused) handleResume();
-          else handlePause();
-        } else {
-          handleAutoPushPop();
-        }
-        return;
-      }
+    const key = e.key?.toLowerCase();
+    const isHotkey = e.code === "Space" || key === "r" || key === "n";
+    if (!isHotkey) return;
 
-      const key = e.key?.toLowerCase();
-      if (key === "r") {
-        e.preventDefault();
-        resetStack();
-      }
-      if (key === "n") {
-        e.preventDefault();
-        if (!isRunning) generateRandomStack();
-      }
-    };
+    if (e.repeat) {
+      e.preventDefault();
+      return;
+    }
 
-    window.addEventListener("keydown", handleHotkeys);
-    return () => window.removeEventListener("keydown", handleHotkeys);
-  }, [
-    generateRandomStack,
-    handleAutoPushPop,
-    handlePause,
-    handleResume,
-    isPaused,
-    isRunning,
-    resetStack,
-  ]);
+    if (e.code === "Space") {
+      e.preventDefault();
+      if (isRunning) {
+        if (isPaused) handleResume();
+        else handlePause();
+      } else {
+        handleAutoPushPop();
+      }
+      return;
+    }
+
+    if (key === "r") {
+      e.preventDefault();
+      resetStack();
+      return;
+    }
+
+    if (key === "n") {
+      e.preventDefault();
+      if (!isRunning) generateRandomStack();
+    }
+  });
 
   return (
     <div className="font-body relative mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:py-12">
