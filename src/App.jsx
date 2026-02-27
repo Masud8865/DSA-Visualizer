@@ -1,5 +1,10 @@
 import { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
@@ -14,7 +19,7 @@ import DijkstraPage from "./pages/DijkstraPage";
 import KruskalPage from "./pages/KruskalPage";
 import AStarPage from "./pages/AStarPage";
 import StackVisualizerPage from "./pages/StackVisualizerPage";
-import TrieVisualizerPage from './pages/TrieVisualizerPage';
+import TrieVisualizerPage from "./pages/TrieVisualizerPage";
 import SignIn from "./pages/SignIn";
 import TopologicalSortPage from "./pages/TopologicalSortPage";
 import SignUp from "./pages/SignUp";
@@ -26,7 +31,6 @@ import ArrayTraversalPage from "./pages/ArrayTraversalPage";
 import OAuthSuccess from "./pages/OAuthSuccess";
 import FloydWarshallPage from "./pages/FloydWarshallPage";
 import ComparisonPage from "./pages/ComparisonPage";
-import KnapsackPage from "./pages/KnapsackPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SinglyLinkedListPage from "./pages/SinglyLinkedListPage";
 import PublicRoute from "./components/PublicRoute";
@@ -89,19 +93,19 @@ import {
   mergeSortJava,
   mergeSortPython,
   mergeSortJS,
-
-} from './algorithms/mergeSort';
+} from "./algorithms/mergeSort";
 import {
   binarySearchCPP,
   binarySearchJava,
   binarySearchPython,
-  binarySearchJS
+  binarySearchJS,
 } from "./algorithms/binarySearch";
 import { dfsCPP, dfsJava } from "./algorithms/dfs";
 
 import { AuthProvider } from "./context/AuthContext";
 import { AnalyticsProvider } from "./context/AnalyticsContext";
 import { Toaster } from "react-hot-toast";
+import KnapsackPage from "./pages/KnapsackPage";
 
 function AppShell() {
   const location = useLocation();
@@ -116,8 +120,9 @@ function AppShell() {
 
   return (
     <div
-      className={`flex min-h-screen flex-col bg-slate-900 text-white selection:bg-blue-500/30 ${hideChrome ? "viz-focus-active" : ""
-        }`}
+      className={`flex min-h-screen flex-col bg-slate-900 text-white selection:bg-blue-500/30 ${
+        hideChrome ? "viz-focus-active" : ""
+      }`}
     >
       {!hideChrome && <Navbar />}
       <VisualizerThemeDock />
@@ -127,17 +132,44 @@ function AppShell() {
           <Route path="/" element={<Home />} />
           <Route path="/algorithms" element={<Algorithms />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/signin" element={<PublicRoute><SignIn /></PublicRoute>} />
-          <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>} />
-          <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordEmail /></PublicRoute>} />
-          <Route path="/forgot-password/otp" element={<PublicRoute><ForgotPasswordOTP /></PublicRoute>} />
+          <Route
+            path="/signin"
+            element={
+              <PublicRoute>
+                <SignIn />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <PublicRoute>
+                <SignUp />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <PublicRoute>
+                <ForgotPasswordEmail />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/forgot-password/otp"
+            element={
+              <PublicRoute>
+                <ForgotPasswordOTP />
+              </PublicRoute>
+            }
+          />
           <Route path="/oauth-success" element={<OAuthSuccess />} />
 
           {/* UPDATED ROUTES: Passing both cppSnippet, javaSnippet, and pythonSnippet */}
           <Route
             path="/visualizer/bubble-sort"
             element={
-
               <VisualizerPage
                 name="Bubble Sort"
                 cppSnippet={bubbleSortCPP}
@@ -145,21 +177,22 @@ function AppShell() {
                 pythonSnippet={bubbleSortPython}
                 jsSnippet={bubbleSortJS}
               />
-
             }
           />
-          <Route
-            path="/visualizer/boyer-moore"
-            element={<BoyerMoorePage />}
-          />
+          <Route path="/visualizer/boyer-moore" element={<BoyerMoorePage />} />
           <Route path="/visualizer/prims" element={<PrimsVisualizerPage />} />
           <Route path="/visualizer/astar" element={<AStarPage />} />
-          <Route path="/visualizer/array-traversal" element={<ArrayTraversalPage />} />
-          <Route path="/visualizer/singly-linked-list" element={<SinglyLinkedListPage />} />
+          <Route
+            path="/visualizer/array-traversal"
+            element={<ArrayTraversalPage />}
+          />
+          <Route
+            path="/visualizer/singly-linked-list"
+            element={<SinglyLinkedListPage />}
+          />
           <Route
             path="/visualizer/selection-sort"
             element={
-
               <VisualizerPage
                 name="Selection Sort"
                 cppSnippet={selectionSortCPP}
@@ -167,13 +200,11 @@ function AppShell() {
                 pythonSnippet={selectionSortPython}
                 jsSnippet={selectionSortJS}
               />
-
             }
           />
           <Route
             path="/visualizer/quick-sort"
             element={
-
               <VisualizerPage
                 name="Quick Sort"
                 cppSnippet={quickSortCPP}
@@ -181,13 +212,11 @@ function AppShell() {
                 pythonSnippet={quickSortPython}
                 jsSnippet={quickSortJS}
               />
-
             }
           />
           <Route
             path="/visualizer/linear-search"
             element={
-
               <VisualizerPage
                 name="Linear Search"
                 cppSnippet={linearSearchCPP}
@@ -195,13 +224,11 @@ function AppShell() {
                 pythonSnippet={linearSearchPython}
                 jsSnippet={linearSearchJS}
               />
-
             }
           />
           <Route
             path="/visualizer/binary-search"
             element={
-
               <VisualizerPage
                 name="Binary Search"
                 cppSnippet={binarySearchCPP}
@@ -209,13 +236,11 @@ function AppShell() {
                 pythonSnippet={binarySearchPython}
                 jsSnippet={binarySearchJS}
               />
-
             }
           />
           <Route
             path="/visualizer/interpolation-search"
             element={
-
               <VisualizerPage
                 name="Interpolation Search"
                 cppSnippet={interpolationSearchCPP}
@@ -223,13 +248,11 @@ function AppShell() {
                 pythonSnippet={interpolationSearchPython}
                 jsSnippet={interpolationSearchJS}
               />
-
             }
           />
           <Route
             path="/visualizer/radix-sort"
             element={
-
               <VisualizerPage
                 name="Radix Sort"
                 cppSnippet={radixSortCPP}
@@ -237,13 +260,11 @@ function AppShell() {
                 pythonSnippet={radixSortPython}
                 jsSnippet={radixSortJS}
               />
-
             }
           />
           <Route
             path="/visualizer/heap-sort"
             element={
-
               <VisualizerPage
                 name="Heap Sort"
                 cppSnippet={heapSortCPP}
@@ -251,13 +272,11 @@ function AppShell() {
                 pythonSnippet={heapSortPython}
                 jsSnippet={heapSortJS}
               />
-
             }
           />
           <Route
             path="/visualizer/insertion-sort"
             element={
-
               <VisualizerPage
                 name="Insertion Sort"
                 cppSnippet={insertionSortCPP}
@@ -265,7 +284,6 @@ function AppShell() {
                 pythonSnippet={insertionSortPython}
                 jsSnippet={insertionSortJS}
               />
-
             }
           />
           <Route
@@ -275,27 +293,33 @@ function AppShell() {
           <Route
             path="/visualizer/merge-sort"
             element={
-
-              <VisualizerPage name="Merge Sort"
+              <VisualizerPage
+                name="Merge Sort"
                 cppSnippet={mergeSortCPP}
                 javaSnippet={mergeSortJava}
                 pythonSnippet={mergeSortPython}
                 jsSnippet={mergeSortJS}
               />
-
             }
           />
           <Route path="/visualizer/dijkstra" element={<DijkstraPage />} />
           <Route path="/visualizer/kruskal" element={<KruskalPage />} />
           <Route path="/visualizer/dfs" element={<GraphVisualizerPage />} />
-          <Route path="/visualizer/topological-sort" element={<TopologicalSortPage />} />
-          <Route path="/visualizer/huffman-coding" element={<HuffmanCodingPage />} />
-          <Route path="/visualizer/floyd-warshall" element={<FloydWarshallPage />} />
-          <Route path="/visualizer/stack" element={<StackVisualizerPage />} />
           <Route
-            path="/visualizer/trie"
-            element={<TrieVisualizerPage />}
+            path="/visualizer/topological-sort"
+            element={<TopologicalSortPage />}
           />
+          <Route
+            path="/visualizer/huffman-coding"
+            element={<HuffmanCodingPage />}
+          />
+          <Route
+            path="/visualizer/floyd-warshall"
+            element={<FloydWarshallPage />}
+          />
+          <Route path="/visualizer/stack" element={<StackVisualizerPage />} />
+          <Route path="/visualizer/trie" element={<TrieVisualizerPage />} />
+          <Route path="/visualizer/knapsack" element={<KnapsackPage />} />
           <Route path="/compare" element={<ComparisonPage />} />
         </Routes>
       </main>
@@ -312,7 +336,9 @@ export default function App() {
       <VisualizerThemeProvider>
         <Router>
           <ScrollToTop />
-          <AppShell />
+          <AnalyticsProvider>
+            <AppShell />
+          </AnalyticsProvider>
         </Router>
       </VisualizerThemeProvider>
     </AuthProvider>
