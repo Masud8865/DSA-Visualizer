@@ -26,6 +26,7 @@ import ArrayTraversalPage from "./pages/ArrayTraversalPage";
 import OAuthSuccess from "./pages/OAuthSuccess";
 import FloydWarshallPage from "./pages/FloydWarshallPage";
 import ComparisonPage from "./pages/ComparisonPage";
+import KnapsackPage from "./pages/KnapsackPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import VisualizerThemeDock from "./components/VisualizerThemeDock";
