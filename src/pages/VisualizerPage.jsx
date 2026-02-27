@@ -41,6 +41,7 @@ import AlgorithmExplanationPanel from "../components/AlgorithmExplanationPanel";
 import HotkeysHint from "../components/HotkeysHint";
 import { shouldSkipHotkeyTarget, useStableHotkeys } from "../hooks/useStableHotkeys";
 import { useVisualizerTheme } from "../context/VisualizerThemeContext";
+import StepController from '../components/StepController';
 
 
 const algorithmMap = {
