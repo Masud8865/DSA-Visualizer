@@ -9,6 +9,7 @@ import {
   BrainCircuit,
   Dices,
   Filter,
+  Grid3X3,
   Layers,
   Layers2,
   Search,
@@ -19,9 +20,24 @@ import {
   X,
   Zap,
   Waypoints,
+  TextSearch,
 } from "lucide-react";
 
 const algorithmsCatalog = [
+  {
+    id: "knapsack",
+    title: "0/1 Knapsack",
+    description:
+      "A dynamic programming algorithm to find the maximum value subset with a given capacity.",
+    path: "/visualizer/knapsack",
+    category: "dynamic-programming",
+    type: "Dynamic Programming",
+    complexity: "O(n * W)",
+    level: "Advanced",
+    icon: Sparkles,
+    gradient: "from-purple-500/25 via-pink-500/15 to-transparent",
+    accent: "text-pink-200",
+  },
   {
     id: "bubble-sort",
     title: "Bubble Sort",
@@ -69,11 +85,11 @@ const algorithmsCatalog = [
     title: 'Boyer-Moore Voting',
     description: 'Find the majority element in an array (appears more than n/2 times) using a single pass.',
     path: '/visualizer/boyer-moore',
-    category: '1d-array-searching', 
+    category: '1d-array-searching',
     type: 'Array Search',
     complexity: 'O(n)',
     level: 'Beginner',
-    icon: Vote, 
+    icon: Vote,
     gradient: 'from-orange-500/25 via-amber-500/15 to-transparent',
     accent: 'text-amber-200',
   },
@@ -176,10 +192,24 @@ const algorithmsCatalog = [
     accent: "text-emerald-200",
   },
   {
-    id: "linked-list",
-    title: "Reverse Linked List",
+    id: "array-traversal-2d",
+    title: "2D Array Traversal",
     description:
-      "Visualize Reverse Linked List and Middle Node (slow/fast pointers) with step-by-step pointer movement.",
+      "Visualize Row-wise, Column-wise, Diagonal, Spiral, Zigzag and Reverse traversals on a 2D matrix with step-by-step animation.",
+    path: "/visualizer/array-traversal",
+    category: "2d-array",
+    type: "Traversal",
+    complexity: "O(m×n)",
+    level: "Beginner",
+    icon: Grid3X3,
+    gradient: "from-sky-500/25 via-indigo-500/15 to-transparent",
+    accent: "text-sky-200",
+  },
+   {
+    id: "linked-list",
+    title: "Linked List Algorithms",
+    description:
+      "Visualize Reverse Linked List, Middle Node (slow/fast pointers), and Floyd's Cycle Detection with step-by-step pointer movement and cycle injection.",
     path: "/visualizer/linked-list",
     category: "linked-list",
     type: "Pointers",
@@ -188,6 +218,20 @@ const algorithmsCatalog = [
     icon: Binary,
     gradient: "from-violet-500/25 via-blue-500/15 to-transparent",
     accent: "text-violet-200",
+  },
+  {
+    id: "singly-linked-list-ops",
+    title: "SLL Insert & Delete",
+    description:
+      "Visualize Singly Linked List Insertion (Head, Tail, Position) and Deletion (Head, Tail, By Value) with animated step-by-step pointer manipulation.",
+    path: "/visualizer/singly-linked-list",
+    category: "linked-list",
+    type: "Pointers",
+    complexity: "O(n)",
+    level: "Beginner",
+    icon: Binary,
+    gradient: "from-emerald-500/25 via-cyan-500/15 to-transparent",
+    accent: "text-emerald-200",
   },
   {
     id: "prims",
@@ -313,11 +357,26 @@ const algorithmsCatalog = [
     gradient: 'from-violet-500/25 via-purple-500/15 to-transparent',
     accent: 'text-violet-200',
   },
+  {
+    id: "trie",
+    title: "Trie (Prefix Tree)",
+    description:
+      "A tree data structure used to efficiently store and retrieve keys in a dataset of strings.",
+    path: "/visualizer/trie",
+    category: "string-matching",
+    type: "Tree",
+    complexity: "O(m)",
+    level: "Intermediate",
+    icon: TextSearch,
+    gradient: "from-purple-500/25 via-fuchsia-500/15 to-transparent",
+    accent: "text-purple-200",
+  },
 ];
 
 const filterTabs = [
   { id: "all", label: "All" },
   { id: "1d-array-sorting", label: "Sorting (1D Array)" },
+  { id: "2d-array", label: "2D Array" },
   { id: "graph-sorting", label: "Graph Sorting" },
   { id: "1d-array-searching", label: "1D Array Searching" },
   { id: "graph-searching", label: "Graph Searching" },
@@ -326,6 +385,8 @@ const filterTabs = [
   { id: "pathfinding", label: "Pathfinding" },
   { id: "mst", label: "Minimum Spanning Tree" },
   { id: "greedy", label: "Greedy Algorithms" },
+  { id: "string-matching", label: "String Matching" },
+  { id: "dynamic-programming", label: "Dynamic Programming" },
 ];
 
 const levelTabs = ["All", "Beginner", "Intermediate", "Advanced"];
@@ -417,6 +478,12 @@ export default function Algorithms() {
   ).length;
   const stackCount = algorithmsCatalog.filter(
     (algorithm) => algorithm.category === 'stack',
+  ).length;
+  const twoDArrayCount = algorithmsCatalog.filter(
+    (algorithm) => algorithm.category === "2d-array",
+  ).length;
+  const stringMatchingCount = algorithmsCatalog.filter(
+    (algorithm) => algorithm.category === "string-matching",
   ).length;
   const hasActiveFilters =
     activeFilter !== "all" ||
@@ -527,6 +594,17 @@ export default function Algorithms() {
               <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
                 <p
                   className="text-[10px] lg:text-xs uppercase tracking-wider text-slate-400 truncate"
+                  title="Strings"
+                >
+                  Strings
+                </p>
+                <p className="mt-1 text-2xl font-bold text-purple-200">
+                  {stringMatchingCount}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                <p
+                  className="text-[10px] lg:text-xs uppercase tracking-wider text-slate-400 truncate"
                   title="Graph Search"
                 >
                   Graph
@@ -546,6 +624,10 @@ export default function Algorithms() {
               <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
                 <p className="text-xs uppercase tracking-wider text-slate-400">Stack Ops</p>
                 <p className="mt-1 text-2xl font-bold text-purple-200">{stackCount}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                <p className="text-xs uppercase tracking-wider text-slate-400">2D Array</p>
+                <p className="mt-1 text-2xl font-bold text-sky-200">{twoDArrayCount}</p>
               </div>
             </div>
           </div>

@@ -24,6 +24,8 @@ import {
     generateBoyerMooreSteps,
 } from "../algorithms/boyerMooreVoting";
 import { renderHighlightedCode } from "../utils/codeHighlight";
+import HotkeysHint from "../components/HotkeysHint";
+import { shouldSkipHotkeyTarget, useStableHotkeys } from "../hooks/useStableHotkeys";
 
 const runStatusStyleMap = {
     Idle: "border-white/15 bg-white/5 text-slate-200",
@@ -98,6 +100,45 @@ export default function BoyerMoorePage() {
         return () => { if (timerRef.current) clearInterval(timerRef.current); };
     }, [runStatus, isPaused, steps.length, speed]);
 
+    useStableHotkeys((e) => {
+        if (shouldSkipHotkeyTarget(e.target)) return;
+
+        const key = e.key?.toLowerCase();
+        const isHotkey = e.code === "Space" || key === "r" || key === "n";
+        if (!isHotkey) return;
+
+        if (e.repeat) {
+            e.preventDefault();
+            return;
+        }
+
+        if (e.code === "Space") {
+            e.preventDefault();
+            if (runStatus === "Running" || runStatus === "Paused") {
+                setIsPaused((prev) => {
+                    const next = !prev;
+                    setRunStatus(next ? "Paused" : "Running");
+                    return next;
+                });
+                return;
+            }
+            if (runStatus === "Completed") handleReset();
+            setTimeout(runAlgorithm, 50);
+            return;
+        }
+
+        if (key === "r") {
+            e.preventDefault();
+            handleReset();
+            return;
+        }
+
+        if (key === "n") {
+            e.preventDefault();
+            if (runStatus !== "Running") handleGenerateNewArray();
+        }
+    });
+
     const handleCopyCode = async () => {
         await navigator.clipboard.writeText(activeCode);
         setCopyState("copied");
@@ -114,8 +155,8 @@ export default function BoyerMoorePage() {
     };
 
     return (
-        <div className="font-body relative mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:py-12">
-            <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_20%_0%,rgba(225,29,72,0.15),transparent_32%)]" />
+        <div className="visualizer-page font-body relative mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:py-12">
+            <div className="visualizer-ambient-layer pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_20%_0%,rgba(225,29,72,0.15),transparent_32%)]" />
 
             {/* Header Section */}
             <motion.section initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="mb-6 overflow-hidden rounded-3xl border border-white/10 bg-slate-800/40 p-6 backdrop-blur shadow-2xl">
@@ -178,6 +219,7 @@ export default function BoyerMoorePage() {
                             {runStatus === "Running" ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}
                             {runStatus === "Completed" ? "Restart" : runStatus === "Running" ? "Active" : "Start Learning"}
                         </button>
+                        <HotkeysHint className="mt-1" />
                     </div>
                 </aside>
 
