@@ -224,7 +224,7 @@ const algorithmsCatalog = [
     id: "singly-linked-list-ops",
     title: "SLL Insert & Delete",
     description:
-      "Visualize Singly Linked List Insertion (Head, Tail, Position) and Deletion (Head, Tail, By Value) with animated step-by-step pointer manipulation.",
+      "Vialize Singly Linked List Insertion (Head, Tail, Position) and Deletion (Head, Tail, By Value) with animated step-by-step pointer manipulation.",
     path: "/visualizer/singly-linked-list",
     category: "linked-list",
     type: "Pointers",
