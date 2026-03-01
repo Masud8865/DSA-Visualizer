@@ -31,6 +31,7 @@ import ArrayTraversalPage from "./pages/ArrayTraversalPage";
 import OAuthSuccess from "./pages/OAuthSuccess";
 import FloydWarshallPage from "./pages/FloydWarshallPage";
 import ComparisonPage from "./pages/ComparisonPage";
+import Profile from "./pages/Profile";
 import NQueensPage from "./pages/NQueensPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SinglyLinkedListPage from "./pages/SinglyLinkedListPage";
@@ -128,44 +129,17 @@ function AppShell() {
       {!hideChrome && <Navbar />}
       <VisualizerThemeDock />
 
-      <main className={`block ${hideChrome ? "pb-0" : ""}`}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/algorithms" element={<Algorithms />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route
-            path="/signin"
-            element={
-              <PublicRoute>
-                <SignIn />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              <PublicRoute>
-                <SignUp />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/forgot-password"
-            element={
-              <PublicRoute>
-                <ForgotPasswordEmail />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/forgot-password/otp"
-            element={
-              <PublicRoute>
-                <ForgotPasswordOTP />
-              </PublicRoute>
-            }
-          />
-          <Route path="/oauth-success" element={<OAuthSuccess />} />
+          <main className="block">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/algorithms" element={<ProtectedRoute><Algorithms /></ProtectedRoute>} />
+              <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
+              <Route path="/signin" element={<PublicRoute><SignIn /></PublicRoute>} />
+              <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>} />
+              <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordEmail /></PublicRoute>} />
+              <Route path="/forgot-password/otp" element={<PublicRoute><ForgotPasswordOTP /></PublicRoute>} />
+              <Route path="/oauth-success" element={<OAuthSuccess />} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
           {/* UPDATED ROUTES: Passing both cppSnippet, javaSnippet, and pythonSnippet */}
           <Route
