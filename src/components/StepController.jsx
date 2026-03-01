@@ -6,7 +6,8 @@ import {
   Pause,
   Rewind,
   FastForward,
-  Layers
+  Layers,
+  Smartphone
 } from "lucide-react";
 
 export default function StepController({
@@ -71,7 +72,7 @@ export default function StepController({
           </span>
         </div>
         
-        {/* Step Slider */}
+        {/* Step Slider - Touch-friendly with larger hit area */}
         <div className="space-y-2">
           <input
             type="range"
@@ -80,7 +81,7 @@ export default function StepController({
             value={currentStep}
             onChange={handleSliderChange}
             disabled={!hasSteps || totalSteps === 0}
-            className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-violet-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-3 sm:h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-violet-500 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
           />
           <div className="flex justify-between text-[10px] text-slate-500">
             <span>0</span>
@@ -89,23 +90,23 @@ export default function StepController({
         </div>
       </div>
 
-      {/* Navigation Controls */}
+      {/* Navigation Controls - Larger touch targets for mobile */}
       <div className="px-4 py-4">
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-2 sm:gap-3">
           {/* Step Backward */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onStepBackward}
             disabled={!canStepBackward}
-            className={`flex items-center justify-center w-12 h-12 rounded-xl transition-all ${
+            className={`flex items-center justify-center min-w-[48px] min-h-[48px] sm:min-w-[44px] sm:min-h-[44px] w-12 h-12 sm:w-11 sm:h-11 rounded-xl transition-all touch-manipulation ${
               canStepBackward
-                ? "bg-white/5 border border-white/10 text-white hover:bg-white/10"
+                ? "bg-white/5 border border-white/10 text-white hover:bg-white/10 active:bg-white/15"
                 : "bg-slate-800/50 border border-white/5 text-slate-600 cursor-not-allowed"
             }`}
             title="Step Backward (Left Arrow)"
           >
-            <SkipBack size={20} />
+            <SkipBack size={20} className="sm:w-5 sm:h-5" />
           </motion.button>
 
           {/* Previous Step */}
@@ -114,30 +115,30 @@ export default function StepController({
             whileTap={{ scale: 0.95 }}
             onClick={onStepBackward}
             disabled={!canStepBackward}
-            className={`flex items-center justify-center w-10 h-10 rounded-lg transition-all ${
+            className={`flex items-center justify-center min-w-[44px] min-h-[44px] w-10 h-10 sm:w-9 sm:h-9 rounded-lg transition-all touch-manipulation ${
               canStepBackward
-                ? "bg-amber-500/10 border border-amber-400/20 text-amber-200 hover:bg-amber-500/20"
+                ? "bg-amber-500/10 border border-amber-400/20 text-amber-200 hover:bg-amber-500/20 active:bg-amber-500/25"
                 : "bg-slate-800/50 border border-white/5 text-slate-600 cursor-not-allowed"
             }`}
             title="Previous Step"
           >
-            <Rewind size={18} />
+            <Rewind size={18} className="sm:w-4 sm:h-4" />
           </motion.button>
 
-          {/* Step Forward (Single Step) */}
+          {/* Step Forward (Single Step) - Main action button, largest */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onStepForward}
             disabled={!canStepForward && !stepMode}
-            className={`flex items-center justify-center w-14 h-14 rounded-xl transition-all ${
+            className={`flex items-center justify-center min-w-[56px] min-h-[56px] sm:min-w-[52px] sm:min-h-[52px] w-14 h-14 sm:w-12 sm:h-12 rounded-xl transition-all touch-manipulation ${
               (canStepForward || stepMode) && !isSorting
-                ? "bg-violet-500/20 border border-violet-400/30 text-violet-200 hover:bg-violet-500/30 shadow-lg shadow-violet-500/20"
+                ? "bg-violet-500/20 border border-violet-400/30 text-violet-200 hover:bg-violet-500/30 active:bg-violet-500/40 shadow-lg shadow-violet-500/20"
                 : "bg-slate-800/50 border border-white/5 text-slate-600 cursor-not-allowed"
             }`}
             title={stepMode ? "Execute Step (Right Arrow)" : "Step Forward"}
           >
-            <SkipForward size={24} />
+            <SkipForward size={24} className="sm:w-6 sm:h-6" />
           </motion.button>
 
           {/* Next Step */}
@@ -146,15 +147,21 @@ export default function StepController({
             whileTap={{ scale: 0.95 }}
             onClick={onStepForward}
             disabled={!canStepForward && !stepMode}
-            className={`flex items-center justify-center w-10 h-10 rounded-lg transition-all ${
+            className={`flex items-center justify-center min-w-[44px] min-h-[44px] w-10 h-10 sm:w-9 sm:h-9 rounded-lg transition-all touch-manipulation ${
               (canStepForward || stepMode) && !isSorting
-                ? "bg-emerald-500/10 border border-emerald-400/20 text-emerald-200 hover:bg-emerald-500/20"
+                ? "bg-emerald-500/10 border border-emerald-400/20 text-emerald-200 hover:bg-emerald-500/20 active:bg-emerald-500/25"
                 : "bg-slate-800/50 border border-white/5 text-slate-600 cursor-not-allowed"
             }`}
             title="Next Step"
           >
-            <FastForward size={18} />
+            <FastForward size={18} className="sm:w-4 sm:h-4" />
           </motion.button>
+        </div>
+        
+        {/* Mobile hint */}
+        <div className="mt-3 flex items-center justify-center gap-1.5 text-[10px] text-slate-500 sm:hidden">
+          <Smartphone size={12} />
+          <span>Swipe on chart to navigate steps</span>
         </div>
       </div>
 

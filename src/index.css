@@ -46,4 +46,84 @@
     background: linear-gradient(90deg, rgba(59, 130, 246, 0.85), rgba(34, 211, 238, 0.85));
     border-radius: 9999px;
   }
+
+  /* Touch action utilities */
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
+
+  .touch-pan-x {
+    touch-action: pan-x;
+  }
+
+  .touch-none {
+    touch-action: none;
+  }
+
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+
+  /* Prevent text selection during swipe */
+  .select-none-swipe {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Responsive bar chart sizing */
+  .bar-height-mobile {
+    height: clamp(150px, 30vh, 300px);
+  }
+
+  .bar-height-tablet {
+    height: clamp(250px, 40vh, 400px);
+  }
+
+  .bar-height-desktop {
+    height: clamp(300px, 50vh, 450px);
+  }
+
+  /* Smooth transitions for zoom */
+  .transition-bar-scale {
+    transition: transform 0.2s ease-out;
+  }
+
+  /* Mobile-friendly button sizing */
+  .btn-touch-min-h {
+    min-height: 44px;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Glass effect for mobile overlays */
+  .glass-overlay {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Swipe indicator animation */
+  @keyframes swipe-hint {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(10px); }
+  }
+
+  .animate-swipe-hint {
+    animation: swipe-hint 1.5s ease-in-out infinite;
+  }
+
+  /* Touch feedback */
+  .touch-active:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+  }
 }
