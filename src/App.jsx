@@ -206,6 +206,7 @@ function AppShell() {
       {!hideChrome && <Footer />}
     </div>
   );
+  
 }
 
 export default function App() {
