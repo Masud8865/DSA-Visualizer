@@ -19,10 +19,19 @@ import {
   Play,
   Pause,
   Code2,
-  Type
+  Type,
+  Menu,
+  X,
+  ChevronDown,
+  ChevronUp,
+  Smartphone,
+  ZoomIn,
+  ZoomOut,
+  GripHorizontal
 } from "lucide-react";
 
 import { useVisualizer } from "../hooks/useVisualizer";
+import { useTouchGestures, useDeviceType } from "../hooks/useTouchGestures";
 import { motion } from "framer-motion";
 import { bubbleSort } from "../algorithms/bubbleSort";
 import { quickSort } from "../algorithms/quickSort";
