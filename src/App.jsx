@@ -22,7 +22,7 @@ import AStarPage from "./pages/AStarPage";
 import StackVisualizerPage from "./pages/StackVisualizerPage";
 import QueueVisualizerPage from "./pages/QueueVisualizerPage";
 import TrieVisualizerPage from "./pages/TrieVisualizerPage";
-import SegmentTreeVisualizerPage from './pages/SegmentTreeVisualizerPage';
+import SegmentTreeVisualizerPage from "./pages/SegmentTreeVisualizerPage";
 import SignIn from "./pages/SignIn";
 import TopologicalSortPage from "./pages/TopologicalSortPage";
 import SignUp from "./pages/SignUp";
@@ -41,6 +41,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import CheatsheetPage from "./pages/CheatsheetPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SinglyLinkedListPage from "./pages/SinglyLinkedListPage";
+import DoublyLinkedListPage from "./pages/DoublyLinkedListPage";
+import KnapsackPage from "./pages/KnapsackPage";
 import PublicRoute from "./components/PublicRoute";
 import VisualizerThemeDock from "./components/VisualizerThemeDock";
 import {
@@ -113,7 +115,6 @@ import { dfsCPP, dfsJava } from "./algorithms/dfs";
 import { AuthProvider } from "./context/AuthContext";
 import { AnalyticsProvider } from "./context/AnalyticsContext";
 import { Toaster } from "react-hot-toast";
-import KnapsackPage from "./pages/KnapsackPage";
 
 function AppShell() {
   const location = useLocation();
@@ -128,8 +129,9 @@ function AppShell() {
 
   return (
     <div
-      className={`flex min-h-screen flex-col bg-slate-900 text-white selection:bg-blue-500/30 ${hideChrome ? "viz-focus-active" : ""
-        }`}
+      className={`flex min-h-screen flex-col bg-slate-900 text-white selection:bg-blue-500/30 ${
+        hideChrome ? "viz-focus-active" : ""
+      }`}
     >
       {!hideChrome && <Navbar />}
       <VisualizerThemeDock />
@@ -146,142 +148,24 @@ function AppShell() {
           <Route path="/oauth-success" element={<OAuthSuccess />} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
-          {/* UPDATED ROUTES: Passing both cppSnippet, javaSnippet, and pythonSnippet */}
-          <Route
-            path="/visualizer/bubble-sort"
-            element={
-              <VisualizerPage
-                name="Bubble Sort"
-                cppSnippet={bubbleSortCPP}
-                javaSnippet={bubbleSortJava}
-                pythonSnippet={bubbleSortPython}
-                jsSnippet={bubbleSortJS}
-              />
-            }
-          />
+          {/* Search visualizers */}
+          <Route path="/visualizer/linear-search" element={<VisualizerPage name="Linear Search" cppSnippet={linearSearchCPP} javaSnippet={linearSearchJava} pythonSnippet={linearSearchPython} jsSnippet={linearSearchJS} />} />
+          <Route path="/visualizer/binary-search" element={<VisualizerPage name="Binary Search" cppSnippet={binarySearchCPP} javaSnippet={binarySearchJava} pythonSnippet={binarySearchPython} jsSnippet={binarySearchJS} />} />
+          <Route path="/visualizer/interpolation-search" element={<VisualizerPage name="Interpolation Search" cppSnippet={interpolationSearchCPP} javaSnippet={interpolationSearchJava} pythonSnippet={interpolationSearchPython} jsSnippet={interpolationSearchJS} />} />
           <Route path="/visualizer/boyer-moore" element={<BoyerMoorePage />} />
+
+          {/* Array visualizers */}
+          <Route path="/visualizer/array-traversal" element={<ArrayTraversalPage />} />
+
+          {/* Linked list visualizers */}
+          <Route path="/visualizer/linked-list" element={<LinkedListVisualizerPage />} />
+          <Route path="/visualizer/singly-linked-list" element={<SinglyLinkedListPage />} />
+          <Route path="/visualizer/doubly-linked-list" element={<DoublyLinkedListPage />} />
+
+          {/* Graph visualizers */}
+          <Route path="/visualizer/dfs" element={<GraphVisualizerPage />} />
+          <Route path="/visualizer/bfs" element={<BFSVisualizerPage />} />
           <Route path="/visualizer/prims" element={<PrimsVisualizerPage />} />
-          <Route path="/visualizer/astar" element={<AStarPage />} />
-          <Route
-            path="/visualizer/array-traversal"
-            element={<ArrayTraversalPage />}
-          />
-          <Route
-            path="/visualizer/singly-linked-list"
-            element={<SinglyLinkedListPage />}
-          />
-          <Route
-            path="/visualizer/selection-sort"
-            element={
-              <VisualizerPage
-                name="Selection Sort"
-                cppSnippet={selectionSortCPP}
-                javaSnippet={selectionSortJava}
-                pythonSnippet={selectionSortPython}
-                jsSnippet={selectionSortJS}
-              />
-            }
-          />
-          <Route
-            path="/visualizer/quick-sort"
-            element={
-              <VisualizerPage
-                name="Quick Sort"
-                cppSnippet={quickSortCPP}
-                javaSnippet={quickSortJava}
-                pythonSnippet={quickSortPython}
-                jsSnippet={quickSortJS}
-              />
-            }
-          />
-          <Route
-            path="/visualizer/linear-search"
-            element={
-              <VisualizerPage
-                name="Linear Search"
-                cppSnippet={linearSearchCPP}
-                javaSnippet={linearSearchJava}
-                pythonSnippet={linearSearchPython}
-                jsSnippet={linearSearchJS}
-              />
-            }
-          />
-          <Route
-            path="/visualizer/binary-search"
-            element={
-              <VisualizerPage
-                name="Binary Search"
-                cppSnippet={binarySearchCPP}
-                javaSnippet={binarySearchJava}
-                pythonSnippet={binarySearchPython}
-                jsSnippet={binarySearchJS}
-              />
-            }
-          />
-          <Route
-            path="/visualizer/interpolation-search"
-            element={
-              <VisualizerPage
-                name="Interpolation Search"
-                cppSnippet={interpolationSearchCPP}
-                javaSnippet={interpolationSearchJava}
-                pythonSnippet={interpolationSearchPython}
-                jsSnippet={interpolationSearchJS}
-              />
-            }
-          />
-          <Route
-            path="/visualizer/radix-sort"
-            element={
-              <VisualizerPage
-                name="Radix Sort"
-                cppSnippet={radixSortCPP}
-                javaSnippet={radixSortJava}
-                pythonSnippet={radixSortPython}
-                jsSnippet={radixSortJS}
-              />
-            }
-          />
-          <Route
-            path="/visualizer/heap-sort"
-            element={
-              <VisualizerPage
-                name="Heap Sort"
-                cppSnippet={heapSortCPP}
-                javaSnippet={heapSortJava}
-                pythonSnippet={heapSortPython}
-                jsSnippet={heapSortJS}
-              />
-            }
-          />
-          <Route
-            path="/visualizer/insertion-sort"
-            element={
-              <VisualizerPage
-                name="Insertion Sort"
-                cppSnippet={insertionSortCPP}
-                javaSnippet={insertionSortJava}
-                pythonSnippet={insertionSortPython}
-                jsSnippet={insertionSortJS}
-              />
-            }
-          />
-          <Route
-            path="/visualizer/linked-list"
-            element={<LinkedListVisualizerPage />}
-          />
-          <Route
-            path="/visualizer/merge-sort"
-            element={
-              <VisualizerPage
-                name="Merge Sort"
-                cppSnippet={mergeSortCPP}
-                javaSnippet={mergeSortJava}
-                pythonSnippet={mergeSortPython}
-                jsSnippet={mergeSortJS}
-              />
-            }
-          />
           <Route path="/visualizer/dijkstra" element={<DijkstraPage />} />
           <Route path="/visualizer/kruskal" element={<KruskalPage />} />
           <Route path="/visualizer/dfs" element={<GraphVisualizerPage />} />
@@ -305,7 +189,6 @@ function AppShell() {
           <Route path="/visualizer/stack" element={<StackVisualizerPage />} />
           <Route path="/visualizer/queue" element={<QueueVisualizerPage />} />
           <Route path="/visualizer/trie" element={<TrieVisualizerPage />} />
-          <Route path="/visualizer/knapsack" element={<KnapsackPage />} />
           <Route path="/visualizer/segment-tree" element={<SegmentTreeVisualizerPage />} />
           <Route path="/compare" element={<ComparisonPage />} />
           <Route path="/cheatsheet" element={<CheatsheetPage />} />
@@ -316,6 +199,7 @@ function AppShell() {
       {!hideChrome && <Footer />}
     </div>
   );
+  
 }
 
 export default function App() {

@@ -224,7 +224,7 @@ const algorithmsCatalog = [
     id: "singly-linked-list-ops",
     title: "SLL Insert & Delete",
     description:
-      "Visualize Singly Linked List Insertion (Head, Tail, Position) and Deletion (Head, Tail, By Value) with animated step-by-step pointer manipulation.",
+      "Vialize Singly Linked List Insertion (Head, Tail, Position) and Deletion (Head, Tail, By Value) with animated step-by-step pointer manipulation.",
     path: "/visualizer/singly-linked-list",
     category: "linked-list",
     type: "Pointers",
@@ -233,6 +233,20 @@ const algorithmsCatalog = [
     icon: Binary,
     gradient: "from-emerald-500/25 via-cyan-500/15 to-transparent",
     accent: "text-emerald-200",
+  },
+  {
+    id: "doubly-linked-list-ops",
+    title: "DLL Insert & Delete",
+    description:
+      "Visualize Doubly Linked List Insertion (Head, Tail, Position) and Deletion (Head, Tail, By Value) with bidirectional pointer animation. Includes backward traversal and DLL vs SLL comparisons.",
+    path: "/visualizer/doubly-linked-list",
+    category: "linked-list",
+    type: "Pointers",
+    complexity: "O(n)",
+    level: "Intermediate",
+    icon: Binary,
+    gradient: "from-purple-500/25 via-blue-500/15 to-transparent",
+    accent: "text-purple-200",
   },
   {
     id: "prims",
