@@ -33,10 +33,12 @@ import BoyerMoorePage from "./pages/BoyerMoorePage";
 import ArrayTraversalPage from "./pages/ArrayTraversalPage";
 import OAuthSuccess from "./pages/OAuthSuccess";
 import FloydWarshallPage from "./pages/FloydWarshallPage";
+import BellmanFordPage from "./pages/BellmanFordPage";
 import ComparisonPage from "./pages/ComparisonPage";
 import Profile from "./pages/Profile";
 import NQueensPage from "./pages/NQueensPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import CheatsheetPage from "./pages/CheatsheetPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SinglyLinkedListPage from "./pages/SinglyLinkedListPage";
 import DoublyLinkedListPage from "./pages/DoublyLinkedListPage";
@@ -141,6 +143,7 @@ function AppShell() {
           <Route path="/algorithms" element={<ProtectedRoute><Algorithms /></ProtectedRoute>} />
           <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
           <Route path="/compare" element={<ComparisonPage />} />
+          <Route path="/cheatsheet" element={<CheatsheetPage />} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
           {/* Auth pages */}
@@ -182,6 +185,7 @@ function AppShell() {
           <Route path="/visualizer/astar" element={<AStarPage />} />
           <Route path="/visualizer/topological-sort" element={<TopologicalSortPage />} />
           <Route path="/visualizer/floyd-warshall" element={<FloydWarshallPage />} />
+          <Route path="/visualizer/bellman-ford" element={<BellmanFordPage />} />
 
           {/* Data structure visualizers */}
           <Route path="/visualizer/stack" element={<StackVisualizerPage />} />
