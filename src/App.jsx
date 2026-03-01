@@ -35,6 +35,7 @@ import FloydWarshallPage from "./pages/FloydWarshallPage";
 import ComparisonPage from "./pages/ComparisonPage";
 import Profile from "./pages/Profile";
 import NQueensPage from "./pages/NQueensPage";
+import NotFoundPage from "./pages/NotFoundPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SinglyLinkedListPage from "./pages/SinglyLinkedListPage";
 import PublicRoute from "./components/PublicRoute";
@@ -299,6 +300,7 @@ function AppShell() {
           <Route path="/visualizer/trie" element={<TrieVisualizerPage />} />
           <Route path="/visualizer/knapsack" element={<KnapsackPage />} />
           <Route path="/compare" element={<ComparisonPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
 
