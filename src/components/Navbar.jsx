@@ -11,6 +11,7 @@ const navLinks = [
 ];
 
 const userNavLinks = [
+  { to: '/profile', label: 'My Profile', icon: User },
   { to: '/progress', label: 'My Progress', icon: BarChart3 },
   { to: '/achievements', label: 'Achievements', icon: Trophy },
   { to: '/learning-paths', label: 'Learning Paths', icon: BookOpen },
@@ -165,12 +166,20 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
           ) : (
-            <Link
-              to="/signin"
-              className="ml-4 rounded-full bg-blue-600 px-5 py-2 text-sm font-bold text-white transition-all hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/25 active:scale-95"
-            >
-              Sign In
-            </Link>
+            <div className="flex items-center gap-3 ml-4">
+              <Link
+                to="/signin"
+                className="rounded-full px-4 py-2 text-sm font-bold text-slate-300 transition-all hover:text-white active:scale-95"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/signup"
+                className="rounded-full bg-blue-600 px-5 py-2 text-sm font-bold text-white transition-all hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/25 active:scale-95"
+              >
+                Sign Up
+              </Link>
+            </div>
           )}
         </div>
 
@@ -287,13 +296,21 @@ export default function Navbar() {
                   initial={{ x: -20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: navLinks.length * 0.07, duration: 0.25 }}
+                  className="flex flex-col gap-2 mt-2"
                 >
                   <Link
                     to="/signin"
                     onClick={closeMobile}
-                    className="flex items-center rounded-lg px-4 py-3 text-sm font-medium text-slate-400 transition-all hover:bg-white/5 hover:text-white"
+                    className="flex justify-center items-center rounded-lg px-4 py-3 text-sm font-medium text-slate-300 border border-white/10 bg-white/5 transition-all hover:bg-white/10 hover:text-white"
                   >
                     Sign In
+                  </Link>
+                  <Link
+                    to="/signup"
+                    onClick={closeMobile}
+                    className="flex justify-center items-center rounded-lg px-4 py-3 text-sm font-medium text-white bg-blue-600 transition-all hover:bg-blue-500"
+                  >
+                    Sign Up
                   </Link>
                 </MotionDiv>
               )}
