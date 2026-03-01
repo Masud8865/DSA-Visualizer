@@ -182,6 +182,24 @@ export default function SignUp() {
 
 
 
+                        <motion.button
+                            variants={itemVariants}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            type="submit"
+                            disabled={isLoading}
+                            className="group relative flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-500 hover:shadow-blue-500/40 disabled:cursor-not-allowed disabled:opacity-70"
+                        >
+                            {isLoading ? (
+                                <Loader2 className="h-5 w-5 animate-spin" />
+                            ) : (
+                                <>
+                                    Sign Up
+                                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                </>
+                            )}
+                        </motion.button>
+
                         <motion.div variants={itemVariants} className="relative mt-6">
                             <div className="absolute inset-0 flex items-center">
                                 <div className="w-full border-t border-slate-700"></div>
@@ -196,7 +214,7 @@ export default function SignUp() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             type="button"
-                            onClick={() => window.location.href = 'http://localhost:5000/api/oauth/google'}
+                            onClick={() => window.location.href = 'https://dsa-visualizer-5pyp.onrender.com/api/oauth/google'}
                             className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-700 bg-slate-800/50 px-8 py-3.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-slate-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900"
                         >
                             <svg className="h-5 w-5" aria-hidden="true" viewBox="0 0 24 24">
