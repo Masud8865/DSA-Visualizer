@@ -138,29 +138,15 @@ function AppShell() {
 
       <main className="block">
         <Routes>
-          {/* Main pages */}
           <Route path="/" element={<Home />} />
           <Route path="/algorithms" element={<ProtectedRoute><Algorithms /></ProtectedRoute>} />
           <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
-          <Route path="/compare" element={<ComparisonPage />} />
-          <Route path="/cheatsheet" element={<CheatsheetPage />} />
-          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-
-          {/* Auth pages */}
           <Route path="/signin" element={<PublicRoute><SignIn /></PublicRoute>} />
           <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>} />
           <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordEmail /></PublicRoute>} />
           <Route path="/forgot-password/otp" element={<PublicRoute><ForgotPasswordOTP /></PublicRoute>} />
           <Route path="/oauth-success" element={<OAuthSuccess />} />
-
-          {/* Sorting visualizers */}
-          <Route path="/visualizer/bubble-sort" element={<VisualizerPage name="Bubble Sort" cppSnippet={bubbleSortCPP} javaSnippet={bubbleSortJava} pythonSnippet={bubbleSortPython} jsSnippet={bubbleSortJS} />} />
-          <Route path="/visualizer/selection-sort" element={<VisualizerPage name="Selection Sort" cppSnippet={selectionSortCPP} javaSnippet={selectionSortJava} pythonSnippet={selectionSortPython} jsSnippet={selectionSortJS} />} />
-          <Route path="/visualizer/quick-sort" element={<VisualizerPage name="Quick Sort" cppSnippet={quickSortCPP} javaSnippet={quickSortJava} pythonSnippet={quickSortPython} jsSnippet={quickSortJS} />} />
-          <Route path="/visualizer/merge-sort" element={<VisualizerPage name="Merge Sort" cppSnippet={mergeSortCPP} javaSnippet={mergeSortJava} pythonSnippet={mergeSortPython} jsSnippet={mergeSortJS} />} />
-          <Route path="/visualizer/insertion-sort" element={<VisualizerPage name="Insertion Sort" cppSnippet={insertionSortCPP} javaSnippet={insertionSortJava} pythonSnippet={insertionSortPython} jsSnippet={insertionSortJS} />} />
-          <Route path="/visualizer/heap-sort" element={<VisualizerPage name="Heap Sort" cppSnippet={heapSortCPP} javaSnippet={heapSortJava} pythonSnippet={heapSortPython} jsSnippet={heapSortJS} />} />
-          <Route path="/visualizer/radix-sort" element={<VisualizerPage name="Radix Sort" cppSnippet={radixSortCPP} javaSnippet={radixSortJava} pythonSnippet={radixSortPython} jsSnippet={radixSortJS} />} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
 
           {/* Search visualizers */}
           <Route path="/visualizer/linear-search" element={<VisualizerPage name="Linear Search" cppSnippet={linearSearchCPP} javaSnippet={linearSearchJava} pythonSnippet={linearSearchPython} jsSnippet={linearSearchJS} />} />
@@ -182,23 +168,30 @@ function AppShell() {
           <Route path="/visualizer/prims" element={<PrimsVisualizerPage />} />
           <Route path="/visualizer/dijkstra" element={<DijkstraPage />} />
           <Route path="/visualizer/kruskal" element={<KruskalPage />} />
-          <Route path="/visualizer/astar" element={<AStarPage />} />
-          <Route path="/visualizer/topological-sort" element={<TopologicalSortPage />} />
-          <Route path="/visualizer/floyd-warshall" element={<FloydWarshallPage />} />
-          <Route path="/visualizer/bellman-ford" element={<BellmanFordPage />} />
-
-          {/* Data structure visualizers */}
+          <Route path="/visualizer/dfs" element={<GraphVisualizerPage />} />
+          <Route path="/visualizer/bfs" element={<BFSVisualizerPage />} />
+          <Route
+            path="/visualizer/topological-sort"
+            element={<TopologicalSortPage />}
+          />
+          <Route
+            path="/visualizer/huffman-coding"
+            element={<HuffmanCodingPage />}
+          />
+          <Route
+            path="/visualizer/floyd-warshall"
+            element={<FloydWarshallPage />}
+          />
+          <Route
+            path="/visualizer/bellman-ford"
+            element={<BellmanFordPage />}
+          />
           <Route path="/visualizer/stack" element={<StackVisualizerPage />} />
           <Route path="/visualizer/queue" element={<QueueVisualizerPage />} />
           <Route path="/visualizer/trie" element={<TrieVisualizerPage />} />
           <Route path="/visualizer/segment-tree" element={<SegmentTreeVisualizerPage />} />
-
-          {/* Other algorithm visualizers */}
-          <Route path="/visualizer/huffman-coding" element={<HuffmanCodingPage />} />
-          <Route path="/visualizer/knapsack" element={<KnapsackPage />} />
-          <Route path="/visualizer/n-queens" element={<NQueensPage />} />
-
-          {/* 404 */}
+          <Route path="/compare" element={<ComparisonPage />} />
+          <Route path="/cheatsheet" element={<CheatsheetPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
