@@ -45,6 +45,7 @@ import {
   VisualizerThemeProvider,
   useVisualizerTheme,
 } from "./context/VisualizerThemeContext";
+import DoublyLinkedListPage from "./pages/DoublyLinkedListPage";
 
 import {
   bubbleSortCPP,
@@ -132,17 +133,18 @@ function AppShell() {
       {!hideChrome && <Navbar />}
       <VisualizerThemeDock />
 
-          <main className="block">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/algorithms" element={<ProtectedRoute><Algorithms /></ProtectedRoute>} />
-              <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
-              <Route path="/signin" element={<PublicRoute><SignIn /></PublicRoute>} />
-              <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>} />
-              <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordEmail /></PublicRoute>} />
-              <Route path="/forgot-password/otp" element={<PublicRoute><ForgotPasswordOTP /></PublicRoute>} />
-              <Route path="/oauth-success" element={<OAuthSuccess />} />
-              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+      <main className="block">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/algorithms" element={<ProtectedRoute><Algorithms /></ProtectedRoute>} />
+          <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
+          <Route path="/signin" element={<PublicRoute><SignIn /></PublicRoute>} />
+          <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>} />
+          <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordEmail /></PublicRoute>} />
+          <Route path="/forgot-password/otp" element={<PublicRoute><ForgotPasswordOTP /></PublicRoute>} />
+          <Route path="/oauth-success" element={<OAuthSuccess />} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          
 
           {/* UPDATED ROUTES: Passing both cppSnippet, javaSnippet, and pythonSnippet */}
           <Route
@@ -268,6 +270,7 @@ function AppShell() {
             path="/visualizer/linked-list"
             element={<LinkedListVisualizerPage />}
           />
+          <Route path="/visualizer/doubly-linked-list" element={<DoublyLinkedListPage />} />
           <Route
             path="/visualizer/merge-sort"
             element={
