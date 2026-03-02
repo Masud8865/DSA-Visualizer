@@ -139,7 +139,7 @@ function AppShell() {
       <main className="block">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/algorithms" element={<Algorithms />} />
+          <Route path="/algorithms" element={<ProtectedRoute><Algorithms /></ProtectedRoute>} />
           <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
           <Route path="/signin" element={<PublicRoute><SignIn /></PublicRoute>} />
           <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>} />
