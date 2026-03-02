@@ -224,7 +224,7 @@ const algorithmsCatalog = [
     id: "singly-linked-list-ops",
     title: "SLL Insert & Delete",
     description:
-      "Vialize Singly Linked List Insertion (Head, Tail, Position) and Deletion (Head, Tail, By Value) with animated step-by-step pointer manipulation.",
+      "Visualize Singly Linked List Insertion (Head, Tail, Position) and Deletion (Head, Tail, By Value) with animated step-by-step pointer manipulation.",
     path: "/visualizer/singly-linked-list",
     category: "linked-list",
     type: "Pointers",
@@ -246,6 +246,20 @@ const algorithmsCatalog = [
     level: "Intermediate",
     icon: Binary,
     gradient: "from-purple-500/25 via-blue-500/15 to-transparent",
+    accent: "text-purple-200",
+  },
+  {
+    id: "dll-bst-conversion",
+    title: "DLL ↔ BST Conversion",
+    description:
+      "Visualize converting a sorted Doubly Linked List to a height-balanced Binary Search Tree and back, with step-by-step in-order traversal animation and pointer rewiring.",
+    path: "/visualizer/dll-to-bst",
+    category: "linked-list",
+    type: "Conversion",
+    complexity: "O(n)",
+    level: "Intermediate",
+    icon: Binary,
+    gradient: "from-purple-500/25 via-indigo-500/15 to-transparent",
     accent: "text-purple-200",
   },
   {

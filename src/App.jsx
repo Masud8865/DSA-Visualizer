@@ -49,7 +49,7 @@ import {
   VisualizerThemeProvider,
   useVisualizerTheme,
 } from "./context/VisualizerThemeContext";
-
+import DLLToBSTPage from "./pages/DLLToBSTPage";
 import {
   bubbleSortCPP,
   bubbleSortJava,
@@ -139,7 +139,7 @@ function AppShell() {
       <main className="block">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/algorithms" element={<ProtectedRoute><Algorithms /></ProtectedRoute>} />
+          <Route path="/algorithms" element={<Algorithms />} />
           <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
           <Route path="/signin" element={<PublicRoute><SignIn /></PublicRoute>} />
           <Route path="/signup" element={<PublicRoute><SignUp /></PublicRoute>} />
@@ -161,6 +161,7 @@ function AppShell() {
           <Route path="/visualizer/linked-list" element={<LinkedListVisualizerPage />} />
           <Route path="/visualizer/singly-linked-list" element={<SinglyLinkedListPage />} />
           <Route path="/visualizer/doubly-linked-list" element={<DoublyLinkedListPage />} />
+          <Route path="/visualizer/dll-to-bst" element={<DLLToBSTPage />} />
 
           {/* Graph visualizers */}
           <Route path="/visualizer/dfs" element={<GraphVisualizerPage />} />
