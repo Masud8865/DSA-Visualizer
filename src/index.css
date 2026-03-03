@@ -199,8 +199,9 @@
 
 /* ── Navbar ── */
 [data-mode="light"] nav.sticky {
-  background-color: rgba(255, 255, 255, 0.85) !important;
-  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05) !important;
 }
 
 [data-mode="light"] nav .text-white,
@@ -240,13 +241,14 @@
 /* ── Global surfaces / cards ── */
 [data-mode="light"] .rounded-3xl.border.border-white\/10,
 [data-mode="light"] .rounded-2xl.border.border-white\/10 {
-  background-color: rgba(255, 255, 255, 0.85) !important;
-  border-color: rgba(0, 0, 0, 0.08) !important;
+  background-color: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 4px 10px -5px rgba(0, 0, 0, 0.04) !important;
 }
 
 [data-mode="light"] .bg-slate-800\/40,
 [data-mode="light"] .bg-slate-800\/35 {
-  background-color: rgba(255, 255, 255, 0.75) !important;
+  background-color: #ffffff !important;
 }
 
 [data-mode="light"] .bg-slate-900\/55,
@@ -349,8 +351,10 @@
 
 /* ── Visualizer ambient layer — soften in light mode ── */
 [data-mode="light"] .visualizer-page>.visualizer-ambient-layer {
-  opacity: 0.15 !important;
-  mix-blend-mode: multiply !important;
+  opacity: 0.4 !important;
+  background: radial-gradient(circle at 20% 0%, rgba(56, 189, 248, 0.15), transparent 40%),
+    radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.1), transparent 40%),
+    #f8fafc !important;
 }
 
 [data-mode="light"] .visualizer-page::before,
@@ -548,16 +552,12 @@ main {
 }
 
 /* ── Dashboard / form cards ── */
-[data-mode="light"] .bg-slate-800\/45 {
-  background-color: rgba(255, 255, 255, 0.8) !important;
-}
-
-[data-mode="light"] .bg-slate-800\/50 {
-  background-color: rgba(241, 245, 249, 0.9) !important;
-}
-
+[data-mode="light"] .bg-slate-800\/45,
+[data-mode="light"] .bg-slate-800\/50,
 [data-mode="light"] .bg-slate-800\/60 {
-  background-color: rgba(226, 232, 240, 0.8) !important;
+  background-color: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.04) !important;
 }
 
 /* ── Progress bar backgrounds ── */
@@ -589,13 +589,16 @@ main {
 
 /* ── Visit log / dark side panels ── */
 [data-mode="light"] .bg-slate-900\/50,
-[data-mode="light"] .bg-slate-900\/60 {
-  background-color: rgba(241, 245, 249, 0.9) !important;
+[data-mode="light"] .bg-slate-900\/60,
+[data-mode="light"] .visualizer-control-hub {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.15) !important;
 }
 
 /* ── Separator lines ── */
 [data-mode="light"] .bg-slate-700 {
-  background-color: #cbd5e1 !important;
+  background-color: rgba(0, 0, 0, 0.06) !important;
 }
 
 /* ── A* grid walls — keep visible ── */
