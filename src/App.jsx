@@ -132,7 +132,7 @@ function AppShell() {
 
   return (
     <div
-      className={`flex min-h-screen flex-col bg-slate-900 text-white selection:bg-blue-500/30 ${hideChrome ? "viz-focus-active" : ""
+      className={`flex min-h-screen flex-col bg-slate-950 text-slate-200 selection:bg-blue-500/30 dark:bg-slate-950 dark:text-slate-200 [data-mode="light"]:bg-slate-50 [data-mode="light"]:text-slate-900 ${hideChrome ? "viz-focus-active" : ""
         }`}
     >
       {!hideChrome && <Navbar />}
