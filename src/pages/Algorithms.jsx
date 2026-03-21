@@ -86,17 +86,18 @@ export const algorithmsCatalog = [
     accent: "text-sky-200",
   },
   {
-    id: 'boyer-moore',
-    title: 'Boyer-Moore Voting',
-    description: 'Find the majority element in an array (appears more than n/2 times) using a single pass.',
-    path: '/visualizer/boyer-moore',
-    category: '1d-array-searching',
-    type: 'Array Search',
-    complexity: 'O(n)',
-    level: 'Beginner',
+    id: "boyer-moore",
+    title: "Boyer-Moore Voting",
+    description:
+      "Find the majority element in an array (appears more than n/2 times) using a single pass.",
+    path: "/visualizer/boyer-moore",
+    category: "1d-array-searching",
+    type: "Array Search",
+    complexity: "O(n)",
+    level: "Beginner",
     icon: Vote,
-    gradient: 'from-orange-500/25 via-amber-500/15 to-transparent',
-    accent: 'text-amber-200',
+    gradient: "from-orange-500/25 via-amber-500/15 to-transparent",
+    accent: "text-amber-200",
   },
   {
     id: "linear-search",
@@ -153,6 +154,20 @@ export const algorithmsCatalog = [
     icon: Sparkles,
     gradient: "from-pink-500/25 via-red-500/15 to-transparent",
     accent: "text-pink-200",
+  },
+  {
+    id: "bucket-sort",
+    title: "Bucket Sort",
+    description:
+      "A non-comparison sort that distributes elements into multiple buckets, sorts each bucket, and reconstructs the array.",
+    path: "/visualizer/bucket-sort",
+    category: "1d-array-sorting",
+    type: "Distribution",
+    complexity: "O(n+k)",
+    level: "Intermediate",
+    icon: Filter,
+    gradient: "from-blue-500/25 via-sky-500/15 to-transparent",
+    accent: "text-blue-200",
   },
   {
     id: "radix-sort",
@@ -323,17 +338,18 @@ export const algorithmsCatalog = [
     accent: "text-blue-200",
   },
   {
-    id: 'astar-search',
-    title: 'A* Pathfinding',
-    description: 'An intelligent pathfinding algorithm that uses heuristics to find the shortest path more efficiently than Dijkstra.',
-    path: '/visualizer/astar',
-    category: 'pathfinding',
-    type: 'Informed Search',
-    complexity: 'O(E log V)',
-    level: 'Intermediate',
+    id: "astar-search",
+    title: "A* Pathfinding",
+    description:
+      "An intelligent pathfinding algorithm that uses heuristics to find the shortest path more efficiently than Dijkstra.",
+    path: "/visualizer/astar",
+    category: "pathfinding",
+    type: "Informed Search",
+    complexity: "O(E log V)",
+    level: "Intermediate",
     icon: Zap, // Uses the Zap icon to represent speed/efficiency
-    gradient: 'from-blue-500/25 via-cyan-500/15 to-transparent',
-    accent: 'text-cyan-200',
+    gradient: "from-blue-500/25 via-cyan-500/15 to-transparent",
+    accent: "text-cyan-200",
   },
   {
     id: "shunting-yard",
@@ -422,7 +438,8 @@ export const algorithmsCatalog = [
   {
     id: "bellman-ford",
     title: "Bellman-Ford Algorithm",
-    description: "Computes the shortest paths from a single source vertex to all other vertices. Handles negative weights.",
+    description:
+      "Computes the shortest paths from a single source vertex to all other vertices. Handles negative weights.",
     path: "/visualizer/bellman-ford",
     category: "pathfinding",
     type: "Dynamic Programming",
@@ -449,7 +466,8 @@ export const algorithmsCatalog = [
   {
     id: "floyd-warshall",
     title: "Floyd Warshall Algorithm",
-    description: "Computes the shortest paths between all pairs of nodes using Dynamic Programming.",
+    description:
+      "Computes the shortest paths between all pairs of nodes using Dynamic Programming.",
     path: "/visualizer/floyd-warshall",
     category: "pathfinding",
     type: "Dynamic Programming",
@@ -460,32 +478,32 @@ export const algorithmsCatalog = [
     accent: "text-rose-200",
   },
   {
-    id: 'stack',
-    title: 'Stack Push-Pop',
+    id: "stack",
+    title: "Stack Push-Pop",
     description:
-      'Visualize LIFO (Last In, First Out) stack operations with animated push and pop demonstrations.',
-    path: '/visualizer/stack',
-    category: 'stack',
-    type: 'LIFO',
-    complexity: 'O(1)',
-    level: 'Beginner',
+      "Visualize LIFO (Last In, First Out) stack operations with animated push and pop demonstrations.",
+    path: "/visualizer/stack",
+    category: "stack",
+    type: "LIFO",
+    complexity: "O(1)",
+    level: "Beginner",
     icon: Layers2,
-    gradient: 'from-violet-500/25 via-purple-500/15 to-transparent',
-    accent: 'text-violet-200',
+    gradient: "from-violet-500/25 via-purple-500/15 to-transparent",
+    accent: "text-violet-200",
   },
   {
-    id: 'queue',
-    title: 'Queue Enqueue-Dequeue',
+    id: "queue",
+    title: "Queue Enqueue-Dequeue",
     description:
-      'Visualize FIFO (First In, First Out) queue operations with animated enqueue and dequeue demonstrations.',
-    path: '/visualizer/queue',
-    category: 'queue',
-    type: 'FIFO',
-    complexity: 'O(1)',
-    level: 'Beginner',
+      "Visualize FIFO (First In, First Out) queue operations with animated enqueue and dequeue demonstrations.",
+    path: "/visualizer/queue",
+    category: "queue",
+    type: "FIFO",
+    complexity: "O(1)",
+    level: "Beginner",
     icon: Layers2,
-    gradient: 'from-teal-500/25 via-cyan-500/15 to-transparent',
-    accent: 'text-teal-200',
+    gradient: "from-teal-500/25 via-cyan-500/15 to-transparent",
+    accent: "text-teal-200",
   },
   {
     id: "trie",
@@ -532,7 +550,8 @@ export const algorithmsCatalog = [
   {
     id: "kadane",
     title: "Kadane's Algorithm",
-    description: "An elegant dynamic programming algorithm to find the maximum contiguous subarray sum in O(n) time.",
+    description:
+      "An elegant dynamic programming algorithm to find the maximum contiguous subarray sum in O(n) time.",
     path: "/visualizer/kadane",
     category: "dynamic-programming",
     type: "Dynamic Programming",
@@ -545,7 +564,8 @@ export const algorithmsCatalog = [
   {
     id: "rabin-karp",
     title: "Rabin-Karp Algorithm",
-    description: "A string-searching algorithm that uses rolling hashes to efficiently find pattern matches in a text.",
+    description:
+      "A string-searching algorithm that uses rolling hashes to efficiently find pattern matches in a text.",
     path: "/visualizer/rabin-karp",
     category: "string-matching",
     type: "Hashing",
@@ -690,7 +710,7 @@ export default function Algorithms({ defaultFilter = "all" }) {
     (algorithm) => algorithm.category === "linked-list",
   ).length;
   const stackCount = algorithmsCatalog.filter(
-    (algorithm) => algorithm.category === 'stack',
+    (algorithm) => algorithm.category === "stack",
   ).length;
   const twoDArrayCount = algorithmsCatalog.filter(
     (algorithm) => algorithm.category === "2d-array",
@@ -724,7 +744,9 @@ export default function Algorithms({ defaultFilter = "all" }) {
 
     const algorithm = algorithmsCatalog.find((a) => a.id === id);
     if (isBookmarked) {
-      toast.success(`${algorithm?.title || "Algorithm"} removed from favorites`);
+      toast.success(
+        `${algorithm?.title || "Algorithm"} removed from favorites`,
+      );
     } else {
       toast.success(`${algorithm?.title || "Algorithm"} added to favorites`);
     }
@@ -862,12 +884,20 @@ export default function Algorithms({ defaultFilter = "all" }) {
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                <p className="text-xs uppercase tracking-wider text-slate-400">Stack Ops</p>
-                <p className="mt-1 text-2xl font-bold text-purple-200">{stackCount}</p>
+                <p className="text-xs uppercase tracking-wider text-slate-400">
+                  Stack Ops
+                </p>
+                <p className="mt-1 text-2xl font-bold text-purple-200">
+                  {stackCount}
+                </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                <p className="text-xs uppercase tracking-wider text-slate-400">2D Array</p>
-                <p className="mt-1 text-2xl font-bold text-sky-200">{twoDArrayCount}</p>
+                <p className="text-xs uppercase tracking-wider text-slate-400">
+                  2D Array
+                </p>
+                <p className="mt-1 text-2xl font-bold text-sky-200">
+                  {twoDArrayCount}
+                </p>
               </div>
             </div>
           </div>
@@ -902,7 +932,7 @@ export default function Algorithms({ defaultFilter = "all" }) {
             </div>
             <Link
               to={spotlightAlgorithm.path}
-              className="mt-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/35 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 px-4 py-2 text-sm font-semibold text-cyan-100 transition-all hover:gap-3 hover:brightness-110"
+              className="mt-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/35 bg-linear-to-r from-cyan-500/20 to-blue-500/20 px-4 py-2 text-sm font-semibold text-cyan-100 transition-all hover:gap-3 hover:brightness-110"
             >
               Launch Visualizer
               <ArrowRight size={16} />
@@ -995,10 +1025,11 @@ export default function Algorithms({ defaultFilter = "all" }) {
               type="button"
               onClick={() => setActiveFilter(tab.id)}
               aria-pressed={activeFilter === tab.id}
-              className={`rounded-full border px-4 py-2 text-sm font-semibold transition-all ${activeFilter === tab.id
-                ? "border-blue-400/60 bg-blue-500/20 text-blue-100 shadow-lg shadow-blue-900/30"
-                : "border-white/10 bg-white/5 text-slate-300 hover:border-cyan-400/40 hover:text-white"
-                }`}
+              className={`rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
+                activeFilter === tab.id
+                  ? "border-blue-400/60 bg-blue-500/20 text-blue-100 shadow-lg shadow-blue-900/30"
+                  : "border-white/10 bg-white/5 text-slate-300 hover:border-cyan-400/40 hover:text-white"
+              }`}
             >
               {tab.label}
             </button>
@@ -1012,10 +1043,11 @@ export default function Algorithms({ defaultFilter = "all" }) {
               type="button"
               onClick={() => setActiveLevel(level)}
               aria-pressed={activeLevel === level}
-              className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition-all ${activeLevel === level
-                ? "border-emerald-400/55 bg-emerald-500/15 text-emerald-100"
-                : "border-white/10 bg-white/5 text-slate-300 hover:border-emerald-400/40 hover:text-white"
-                }`}
+              className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition-all ${
+                activeLevel === level
+                  ? "border-emerald-400/55 bg-emerald-500/15 text-emerald-100"
+                  : "border-white/10 bg-white/5 text-slate-300 hover:border-emerald-400/40 hover:text-white"
+              }`}
             >
               {level}
             </button>
@@ -1033,7 +1065,9 @@ export default function Algorithms({ defaultFilter = "all" }) {
           // Filter algorithms that belong to this specific category
           const categoryAlgos = filteredAlgorithms
             .filter((algo) => algo.category === cat.id)
-            .sort((a, b) => (levelRank[a.level] ?? 99) - (levelRank[b.level] ?? 99));
+            .sort(
+              (a, b) => (levelRank[a.level] ?? 99) - (levelRank[b.level] ?? 99),
+            );
 
           // If no algorithms in this category match current search/filters, don't show the header
           if (categoryAlgos.length === 0) return null;
@@ -1045,7 +1079,7 @@ export default function Algorithms({ defaultFilter = "all" }) {
                 <h2 className="text-2xl font-bold text-white tracking-tight whitespace-nowrap capitalize">
                   {cat.label}
                 </h2>
-                <div className="h-[1px] flex-grow bg-gradient-to-r from-white/15 to-transparent" />
+                <div className="h-px grow bg-linear-to-r from-white/15 to-transparent" />
                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-white/5 px-2 py-1 rounded border border-white/5">
                   {categoryAlgos.length}{" "}
                   {categoryAlgos.length === 1 ? "Algorithm" : "Algorithms"}
@@ -1070,7 +1104,7 @@ export default function Algorithms({ defaultFilter = "all" }) {
                     >
                       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0)_45%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                       <div
-                        className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${algorithm.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
+                        className={`pointer-events-none absolute inset-0 bg-linear-to-br ${algorithm.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
                       />
                       <div className="relative z-10">
                         <div className="flex items-start justify-between mb-4">
@@ -1083,16 +1117,27 @@ export default function Algorithms({ defaultFilter = "all" }) {
                               e.stopPropagation();
                               toggleBookmark(algorithm.id);
                             }}
-                            className={`group/bookmark p-2 rounded-xl border transition-all ${bookmarks.includes(algorithm.id)
-                              ? "border-pink-400/50 bg-pink-500/20 text-pink-300"
-                              : "border-white/10 bg-white/5 text-slate-400 hover:border-pink-400/30 hover:text-pink-300"
-                              }`}
-                            title={bookmarks.includes(algorithm.id) ? "Remove from bookmarks" : "Add to bookmarks"}
+                            className={`group/bookmark p-2 rounded-xl border transition-all ${
+                              bookmarks.includes(algorithm.id)
+                                ? "border-pink-400/50 bg-pink-500/20 text-pink-300"
+                                : "border-white/10 bg-white/5 text-slate-400 hover:border-pink-400/30 hover:text-pink-300"
+                            }`}
+                            title={
+                              bookmarks.includes(algorithm.id)
+                                ? "Remove from bookmarks"
+                                : "Add to bookmarks"
+                            }
                           >
                             {bookmarks.includes(algorithm.id) ? (
-                              <BookmarkCheck size={20} className="fill-current" />
+                              <BookmarkCheck
+                                size={20}
+                                className="fill-current"
+                              />
                             ) : (
-                              <Bookmark size={20} className="group-hover/bookmark:fill-pink-500/20" />
+                              <Bookmark
+                                size={20}
+                                className="group-hover/bookmark:fill-pink-500/20"
+                              />
                             )}
                           </button>
                         </div>
