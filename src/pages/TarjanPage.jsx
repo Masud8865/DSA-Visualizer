@@ -1,18 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Activity,
   ArrowLeft,
   Network
 } from "lucide-react";
-import {
-  tarjanCPP,
-  tarjanJava,
-  tarjanPython,
-  tarjanJS,
-} from "../algorithms/tarjan";
 import {
   shouldSkipHotkeyTarget,
   useStableHotkeys,
@@ -74,7 +69,7 @@ function generateDirectedGraphWithSCCs(nodeCount, width, height) {
         edges.push({
           source: u,
           target: v,
-          id: \`e-\${u}-\${v}\`,
+          id: `e-${u}-${v}`,
           status: "default",
         });
       }
@@ -85,7 +80,7 @@ function generateDirectedGraphWithSCCs(nodeCount, width, height) {
           edges.push({
             source: u,
             target: v,
-            id: \`e-\${u}-\${v}\`,
+            id: `e-${u}-${v}`,
             status: "default",
           });
         }
@@ -103,7 +98,7 @@ function generateDirectedGraphWithSCCs(nodeCount, width, height) {
       edges.push({
         source: u,
         target: v,
-        id: \`e-\${u}-\${v}\`,
+        id: `e-${u}-${v}`,
         status: "default",
       });
     }
@@ -121,7 +116,7 @@ function formatElapsed(seconds) {
     .toString()
     .padStart(2, "0");
   const secs = (seconds % 60).toString().padStart(2, "0");
-  return \`\${mins}:\${secs}\`;
+  return `${mins}:${secs}`;
 }
 
 export default function TarjanPage() {
@@ -135,20 +130,10 @@ export default function TarjanPage() {
   const [isPaused, setIsPaused] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [statusMessage, setStatusMessage] = useState("Generate a graph to start.");
-  const [selectedLanguage, setSelectedLanguage] = useState("C++");
 
   const [stack, setStack] = useState([]);
   const [sccs, setSccs] = useState([]);
   const [visitedCount, setVisitedCount] = useState(0);
-
-  const activeCode =
-    selectedLanguage === "C++"
-      ? tarjanCPP
-      : selectedLanguage === "Java"
-        ? tarjanJava
-        : selectedLanguage === "Python"
-          ? tarjanPython
-          : tarjanJS;
 
   const progress = useMemo(() => {
     if (runStatus === "Completed") return 100;
@@ -162,6 +147,7 @@ export default function TarjanPage() {
 
   useEffect(() => {
     handleNewGraph(nodeCount);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -299,7 +285,7 @@ export default function TarjanPage() {
 
     if (!stopSignal.current) {
       setRunStatus("Completed");
-      setStatusMessage(\`Completed! Found \${sccCountRef} Strongly Connected Component(s).\`);
+      setStatusMessage(`Completed! Found ${sccCountRef} Strongly Connected Component(s).`);
     }
     setIsRunning(false);
 
@@ -316,7 +302,7 @@ export default function TarjanPage() {
       setVisitedCount(tempVisitedCount);
 
       updateNode(u, { status: "processing", disc: disc[u], low: low[u] });
-      setStatusMessage(\`Processing Node \${u} (disc:\${disc[u]} low:\${low[u]})\`);
+      setStatusMessage(`Processing Node ${u} (disc:${disc[u]} low:${low[u]})`);
       if (!(await waitWithControl(speed))) return false;
 
       for (let v of adj[u]) {
@@ -331,13 +317,13 @@ export default function TarjanPage() {
             
             low[u] = Math.min(low[u], low[v]);
             updateNode(u, { low: low[u] });
-            setStatusMessage(\`Backtracking to Node \${u}, updated low pointer to \${low[u]}\`);
+            setStatusMessage(`Backtracking to Node ${u}, updated low pointer to ${low[u]}`);
             if (!(await waitWithControl(speed))) return false;
 
         } else if (inStack[v]) {
             low[u] = Math.min(low[u], disc[v]);
             updateNode(u, { low: low[u] });
-            setStatusMessage(\`Node \${v} in stack (back-edge), Node \${u} low updated to \${low[u]}\`);
+            setStatusMessage(`Node ${v} in stack (back-edge), Node ${u} low updated to ${low[u]}`);
             if (!(await waitWithControl(speed))) return false;
         }
         
@@ -346,7 +332,7 @@ export default function TarjanPage() {
 
       if (low[u] === disc[u]) {
         sccCountRef++;
-        setStatusMessage(\`Found SCC \${sccCountRef} rooted at Node \${u}\`);
+        setStatusMessage(`Found SCC ${sccCountRef} rooted at Node ${u}`);
         if (!(await waitWithControl(speed))) return false;
 
         const currentSCC = [];
@@ -443,7 +429,7 @@ export default function TarjanPage() {
               <span className="rounded-full border border-emerald-400/25 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-200">
                 Graph
               </span>
-              <span className={\`rounded-full border px-3 py-1 text-xs font-semibold \${runStatusStyleMap[runStatus]}\`}>
+              <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${runStatusStyleMap[runStatus]}`}>
                 {runStatus}
               </span>
               <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-200">
@@ -471,7 +457,7 @@ export default function TarjanPage() {
                 <motion.div
                   className="h-full bg-linear-to-r from-emerald-500 to-cyan-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
                   initial={{ width: 0 }}
-                  animate={{ width: \`\${progress}%\` }}
+                  animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.4 }}
                 />
               </div>
@@ -503,7 +489,7 @@ export default function TarjanPage() {
                   )}
                   {stack.map((id, idx) => (
                     <motion.div
-                      key={\`stack-\${id}-\${idx}\`}
+                      key={`stack-${id}-${idx}`}
                       layout
                       initial={{ opacity: 0, scale: 0.5, y: -10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -564,13 +550,13 @@ export default function TarjanPage() {
             <div className="grid grid-cols-2 gap-2 pt-2">
               <button
                 onClick={isRunning ? (isPaused ? () => { pauseSignal.current = false; setIsPaused(false); setRunStatus("Running"); } : () => { pauseSignal.current = true; setIsPaused(true); setRunStatus("Paused"); }) : runTarjan}
-                className={\`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all active:scale-95 \${
+                className={`flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all active:scale-95 ${
                   isRunning && !isPaused
                     ? "bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/50"
                     : isRunning && isPaused
                       ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/50"
                       : "bg-emerald-500 text-slate-900 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20"
-                }\`}
+                }`}
               >
                 {isRunning && !isPaused ? "Pause" : isRunning && isPaused ? "Resume" : "Start Algorithm"}
               </button>
@@ -650,10 +636,10 @@ export default function TarjanPage() {
                         pathLength: 1,
                         opacity: 1,
                       }}
-                      d={\`M \${startX} \${startY} Q \${midX} \${midY} \${endX} \${endY}\`}
+                      d={`M ${startX} ${startY} Q ${midX} ${midY} ${endX} ${endY}`}
                       fill="none"
-                      className={\`transition-colors duration-300 \${getEdgeColor(edge.status)}\`}
-                      markerEnd={\`url(#arrowhead-\${edge.status === "traversing" ? "traversing" : "default"})\`}
+                      className={`transition-colors duration-300 ${getEdgeColor(edge.status)}`}
+                      markerEnd={`url(#arrowhead-${edge.status === "traversing" ? "traversing" : "default"})`}
                     />
                   );
                 })}
@@ -671,7 +657,7 @@ export default function TarjanPage() {
                     x: node.x - 24,
                     y: node.y - 24,
                   }}
-                  className={\`absolute flex h-12 w-12 items-center justify-center rounded-full border-2 text-sm font-bold text-white shadow-xl transition-all duration-300 \${getNodeColor(node.status, node.sccIndex)}\`}
+                  className={`absolute flex h-12 w-12 items-center justify-center rounded-full border-2 text-sm font-bold text-white shadow-xl transition-all duration-300 ${getNodeColor(node.status, node.sccIndex)}`}
                 >
                   {node.id}
                   {node.disc !== -1 && (
