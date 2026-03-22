@@ -46,6 +46,7 @@ import { binarysearch } from '../algorithms/binarySearch';
 import { selectionSort } from "../algorithms/selectionSort";
 import { mergeSort } from "../algorithms/mergeSort";
 import { countingSort } from "../algorithms/countingSort";
+import { bucketSort } from "../algorithms/bucketSort";
 import CustomInputModal from "../components/CustomInputModal";
 import AlgorithmExplanationPanel from "../components/AlgorithmExplanationPanel";
 import HotkeysHint from "../components/HotkeysHint";
@@ -175,6 +176,16 @@ const algorithmMap = {
     space: "O(k)",
     description:
       "Counting Sort is a non-comparison sorting algorithm that counts the frequency of each element to place them sequentially in order.",
+  },
+  'Bucket Sort': {
+    run: bucketSort,
+    category: "Sorting",
+    best: "O(n + k)",
+    average: "O(n + k)",
+    worst: "O(n²)",
+    space: "O(n + k)",
+    description:
+      "Bucket Sort is a non-comparison algorithm that distributes elements into buckets, sorts each bucket, and merges them.",
   },
 
 };
