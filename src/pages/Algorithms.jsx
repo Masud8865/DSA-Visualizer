@@ -20,6 +20,7 @@ import {
   X,
   Zap,
   Hash,
+  Shield,
   Waypoints,
   TextSearch,
   Bookmark,
@@ -293,6 +294,20 @@ export const algorithmsCatalog = [
     level: "Intermediate",
     icon: Binary,
     gradient: "from-purple-500/25 via-indigo-500/15 to-transparent",
+    accent: "text-purple-200",
+  },
+  {
+    id: "bankers-algorithm",
+    title: "Banker's Algorithm",
+    description:
+      "A deadlock avoidance algorithm that safely allocates resources to processes by ensuring the system remains in a safe state.",
+    path: "/visualizer/bankers-algorithm",
+    category: "deadlock-avoidance",
+    type: "Deadlock Avoidance",
+    complexity: "O(n²×m)",
+    level: "Advanced",
+    icon: Shield,
+    gradient: "from-purple-500/25 via-violet-500/15 to-transparent",
     accent: "text-purple-200",
   },
   {
@@ -622,6 +637,7 @@ const filterTabs = [
   { id: "dynamic-programming", label: "Dynamic Programming" },
   { id: "range-queries", label: "Range Queries" },
   { id: "hash-table", label: "Hash Table" },
+  { id: "deadlock-avoidance", label: "Deadlock Avoidance" },
 ];
 
 const levelTabs = ["All", "Beginner", "Intermediate", "Advanced"];
@@ -1039,11 +1055,10 @@ export default function Algorithms({ defaultFilter = "all" }) {
               type="button"
               onClick={() => setActiveFilter(tab.id)}
               aria-pressed={activeFilter === tab.id}
-              className={`rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
-                activeFilter === tab.id
-                  ? "border-blue-400/60 bg-blue-500/20 text-blue-100 shadow-lg shadow-blue-900/30"
-                  : "border-white/10 bg-white/5 text-slate-300 hover:border-cyan-400/40 hover:text-white"
-              }`}
+              className={`rounded-full border px-4 py-2 text-sm font-semibold transition-all ${activeFilter === tab.id
+                ? "border-blue-400/60 bg-blue-500/20 text-blue-100 shadow-lg shadow-blue-900/30"
+                : "border-white/10 bg-white/5 text-slate-300 hover:border-cyan-400/40 hover:text-white"
+                }`}
             >
               {tab.label}
             </button>
@@ -1057,11 +1072,10 @@ export default function Algorithms({ defaultFilter = "all" }) {
               type="button"
               onClick={() => setActiveLevel(level)}
               aria-pressed={activeLevel === level}
-              className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition-all ${
-                activeLevel === level
-                  ? "border-emerald-400/55 bg-emerald-500/15 text-emerald-100"
-                  : "border-white/10 bg-white/5 text-slate-300 hover:border-emerald-400/40 hover:text-white"
-              }`}
+              className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition-all ${activeLevel === level
+                ? "border-emerald-400/55 bg-emerald-500/15 text-emerald-100"
+                : "border-white/10 bg-white/5 text-slate-300 hover:border-emerald-400/40 hover:text-white"
+                }`}
             >
               {level}
             </button>
@@ -1131,11 +1145,10 @@ export default function Algorithms({ defaultFilter = "all" }) {
                               e.stopPropagation();
                               toggleBookmark(algorithm.id);
                             }}
-                            className={`group/bookmark p-2 rounded-xl border transition-all ${
-                              bookmarks.includes(algorithm.id)
-                                ? "border-pink-400/50 bg-pink-500/20 text-pink-300"
-                                : "border-white/10 bg-white/5 text-slate-400 hover:border-pink-400/30 hover:text-pink-300"
-                            }`}
+                            className={`group/bookmark p-2 rounded-xl border transition-all ${bookmarks.includes(algorithm.id)
+                              ? "border-pink-400/50 bg-pink-500/20 text-pink-300"
+                              : "border-white/10 bg-white/5 text-slate-400 hover:border-pink-400/30 hover:text-pink-300"
+                              }`}
                             title={
                               bookmarks.includes(algorithm.id)
                                 ? "Remove from bookmarks"

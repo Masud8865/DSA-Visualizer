@@ -50,6 +50,7 @@ import KnapsackPage from "./pages/KnapsackPage";
 import RabinKarpPage from "./pages/RabinKarpPage";
 import PublicRoute from "./components/PublicRoute";
 import VisualizerThemeDock from "./components/VisualizerThemeDock";
+import BankersAlgorithmPage from "./pages/BankersAlgorithmPage";
 import HashTablePage from "./pages/HashTablePage";
 import {
   VisualizerThemeProvider,
@@ -231,6 +232,7 @@ function AppShell() {
             path="/visualizer/bellman-ford"
             element={<BellmanFordPage />}
           />
+          <Route path="/visualizer/bankers-algorithm" element={<BankersAlgorithmPage />} />
           <Route path="/visualizer/astar" element={<AStarPage />} />
           <Route path="/visualizer/n-queens" element={<NQueensPage />} />
           <Route path="/visualizer/knapsack" element={<KnapsackPage />} />
