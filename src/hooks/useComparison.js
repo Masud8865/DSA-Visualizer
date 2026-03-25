@@ -98,25 +98,20 @@ export const useComparison = () => {
   // Array type/scenario tracking
   const [arrayType, setArrayType] = useState('random');
   
+  // Track array state for each selected algorithm
+  const [algorithmArrays, setAlgorithmArrays] = useState({});
+  
   // Refs for controlling execution
 
   const stopSignal = useRef(false);
   const pauseSignal = useRef(false);
   const timerRef = useRef(null);
+  const elapsedTimeRef = useRef(0);
+  const algorithmStatsRef = useRef({});
   
   // Get analytics context
   const { addSession, resetRealTimeData, updateRealTimeData } = useAnalytics();
 
-
-  // Generate random array
-  const generateRandomArray = useCallback((size = arraySize) => {
-    const newArray = Array.from({ length: size }, () => ({
-      value: Math.floor(Math.random() * 400) + 20,
-      status: 'default',
-    }));
-    setArray(newArray);
-    resetStats();
-  }, [arraySize]);
 
   // Reset all stats
   const resetStats = useCallback(() => {
@@ -131,10 +126,13 @@ export const useComparison = () => {
       };
     });
     setAlgorithmStats(newStats);
+    algorithmStatsRef.current = newStats;
     setElapsedTime(0);
+    elapsedTimeRef.current = 0;
     setIsRunning(false);
     setIsPaused(false);
     setRealTimeData({});
+    setAlgorithmArrays({});
     resetRealTimeData();
     stopSignal.current = false;
     pauseSignal.current = false;
@@ -144,8 +142,6 @@ export const useComparison = () => {
     }
   }, [selectedAlgorithms, resetRealTimeData]);
 
-
-  // Initialize stats when algorithms are selected
   const initializeStats = useCallback(() => {
     const newStats = {};
     selectedAlgorithms.forEach(algo => {
@@ -158,7 +154,19 @@ export const useComparison = () => {
       };
     });
     setAlgorithmStats(newStats);
+    algorithmStatsRef.current = newStats;
   }, [selectedAlgorithms]);
+
+  // Generate random array
+  const generateRandomArray = useCallback((size = arraySize) => {
+    setArraySize(size);
+    const newArray = Array.from({ length: size }, () => ({
+      value: Math.floor(Math.random() * 400) + 20,
+      status: 'default',
+    }));
+    setArray(newArray);
+    resetStats();
+  }, [arraySize, resetStats]);
 
   // Select algorithms to compare (2-4)
   const toggleAlgorithm = useCallback((algorithm) => {
@@ -180,6 +188,13 @@ export const useComparison = () => {
 
   // Update stat for a specific algorithm
   const updateStat = useCallback((algoId, statType, value) => {
+    algorithmStatsRef.current = {
+      ...algorithmStatsRef.current,
+      [algoId]: {
+        ...algorithmStatsRef.current[algoId],
+        [statType]: value,
+      }
+    };
     setAlgorithmStats(prev => ({
       ...prev,
       [algoId]: {
@@ -191,6 +206,17 @@ export const useComparison = () => {
 
   // Increment stat for a specific algorithm
   const incrementStat = useCallback((algoId, statType, amount = 1) => {
+    const currentVal = algorithmStatsRef.current[algoId]?.[statType] || 0;
+    const newVal = currentVal + amount;
+    
+    algorithmStatsRef.current = {
+      ...algorithmStatsRef.current,
+      [algoId]: {
+        ...algorithmStatsRef.current[algoId],
+        [statType]: newVal,
+      }
+    };
+
     setAlgorithmStats(prev => ({
       ...prev,
       [algoId]: {
@@ -209,19 +235,28 @@ export const useComparison = () => {
     setIsRunning(true);
     setIsPaused(false);
     setElapsedTime(0);
+    elapsedTimeRef.current = 0;
     setRealTimeData({});
     resetRealTimeData();
 
     // Start timer
     timerRef.current = setInterval(() => {
-      setElapsedTime(prev => prev + 1);
+      setElapsedTime(prev => {
+        const next = prev + 1;
+        elapsedTimeRef.current = next;
+        return next;
+      });
     }, 1000);
 
-    // Create a copy of the array for each algorithm
-    const arrayCopies = {};
+    // Initialize individual arrays for each algorithm
+    const initialArrays = {};
     selectedAlgorithms.forEach(algo => {
-      arrayCopies[algo.id] = array.map(item => ({ ...item }));
+      initialArrays[algo.id] = array.map(item => ({ ...item }));
     });
+    setAlgorithmArrays(initialArrays);
+
+    // Initial copies for algorithm functions
+    const arrayCopies = { ...initialArrays };
 
     // Initialize stats
     const newStats = {};
@@ -235,6 +270,7 @@ export const useComparison = () => {
       };
     });
     setAlgorithmStats(newStats);
+    algorithmStatsRef.current = newStats;
 
     // Track step counter for real-time data
     const stepCounters = {};
@@ -242,10 +278,13 @@ export const useComparison = () => {
       stepCounters[algo.id] = 0;
     });
 
-    // Create a custom setArray function for each algorithm
     const createSetArrayForAlgo = (algoId) => {
       return (newArray) => {
         arrayCopies[algoId] = newArray;
+        setAlgorithmArrays(prev => ({
+          ...prev,
+          [algoId]: [...newArray]
+        }));
       };
     };
 
@@ -270,7 +309,7 @@ export const useComparison = () => {
         // Track real-time data every 5 steps to avoid too many updates
         stepCounters[algoId]++;
         if (stepCounters[algoId] % 5 === 0 || comparisons > 0 || swaps > 0) {
-          const currentStats = algorithmStats[algoId] || {};
+          const currentStats = algorithmStatsRef.current[algoId] || {};
           const dataPoint = {
             step: stepCounters[algoId],
             comparisons: (currentStats.comparisons || 0) + comparisons,
@@ -312,7 +351,12 @@ export const useComparison = () => {
         if (!stopSignal.current) {
           setAlgorithmStats(prev => ({
             ...prev,
-            [algo.id]: { ...prev[algo.id], isComplete: true, isRunning: false }
+            [algo.id]: { 
+              ...prev[algo.id], 
+              isComplete: true, 
+              isRunning: false,
+              finishTime: elapsedTimeRef.current 
+            }
           }));
         }
       } catch (error) {
@@ -333,25 +377,20 @@ export const useComparison = () => {
     }
     setIsRunning(false);
 
-    // Save session to history
-    const finalStats = {};
-    selectedAlgorithms.forEach(algo => {
-      finalStats[algo.id] = algorithmStats[algo.id] || {};
-    });
-    
     addSession({
       algorithms: selectedAlgorithms,
       arraySize,
       arrayType,
-      elapsedTime,
-      results: finalStats,
+      elapsedTime: elapsedTimeRef.current,
+      results: algorithmStatsRef.current,
       speed,
     });
-  }, [selectedAlgorithms, array, speed, arraySize, arrayType, incrementStat, updateStat, addSession, updateRealTimeData, resetRealTimeData, algorithmStats, elapsedTime]);
+  }, [selectedAlgorithms, array, speed, arraySize, arrayType, incrementStat, updateStat, addSession, updateRealTimeData, resetRealTimeData]);
 
   // Set array from scenario
   const setArrayFromScenario = useCallback((scenario, newArray) => {
     setArrayType(scenario);
+    setArraySize(newArray.length);
     setArray(newArray);
     resetStats();
   }, [resetStats]);
@@ -401,6 +440,7 @@ export const useComparison = () => {
     elapsedTime,
     algorithmStats,
     realTimeData,
+    algorithmArrays,
     arrayType,
     
     // Actions

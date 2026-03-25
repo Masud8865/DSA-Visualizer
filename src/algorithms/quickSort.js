@@ -1,12 +1,12 @@
 import { sleep } from '../utils/helpers';
 
-export const quickSort = async (array, setArray, speed, stopSignal, pauseSignal) => {
+export const quickSort = async (array, setArray, speed, stopSignal, pauseSignal, updateStepInfo) => {
     let arr = array.map(item => ({ ...item }));
 
     // Main Recursive Function
     const solve = async (low, high) => {
         if (low < high) {
-            let pivotIdx = await partition(arr, low, high, setArray, speed, stopSignal, pauseSignal);
+            let pivotIdx = await partition(arr, low, high, setArray, speed, stopSignal, pauseSignal, updateStepInfo);
 
             if (pivotIdx === -1) return; // Stop if signal received
 
@@ -28,7 +28,7 @@ export const quickSort = async (array, setArray, speed, stopSignal, pauseSignal)
     }
 };
 
-const partition = async (arr, low, high, setArray, speed, stopSignal, pauseSignal) => {
+const partition = async (arr, low, high, setArray, speed, stopSignal, pauseSignal, updateStepInfo) => {
     let pivotValue = arr[high].value;
     arr[high].status = 'pivot'; // Highlight Pivot with color
     setArray([...arr]);
@@ -47,14 +47,20 @@ const partition = async (arr, low, high, setArray, speed, stopSignal, pauseSigna
 
         arr[j].status = 'comparing';
         setArray([...arr]);
+        if (updateStepInfo) {
+            updateStepInfo({
+                operation: `Comparing index ${j} with pivot`,
+            });
+        }
         await sleep(speed);
 
         if (arr[j].value < pivotValue) {
             i++;
-            // Swapping Visualization
-            arr[i].status = 'swapping';
-            arr[j].status = 'swapping';
-
+            if (updateStepInfo) {
+                updateStepInfo({
+                    operation: `Swapping indices ${i} and ${j}`,
+                });
+            }
             [arr[i].value, arr[j].value] = [arr[j].value, arr[i].value];
 
             setArray([...arr]);

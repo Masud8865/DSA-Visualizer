@@ -1,6 +1,6 @@
 import { sleep } from '../utils/helpers';
 
-export const insertionSort = async (array, setArray, speed, stopSignal, pauseSignal) => {
+export const insertionSort = async (array, setArray, speed, stopSignal, pauseSignal, updateStepInfo) => {
   let arr = array.map(item => ({ ...item }));
   const n = arr.length;
 
@@ -14,6 +14,11 @@ export const insertionSort = async (array, setArray, speed, stopSignal, pauseSig
     let j = i;
     arr[i].status = 'comparing';
     setArray([...arr]);
+    if (updateStepInfo) {
+      updateStepInfo({
+        operation: `Comparing index ${i}`,
+      });
+    }
     await sleep(speed);
 
     while (j > 0 && arr[j - 1].value > arr[j].value) {
@@ -26,6 +31,11 @@ export const insertionSort = async (array, setArray, speed, stopSignal, pauseSig
       arr[j].status = 'swapping';
       arr[j - 1].status = 'swapping';
       setArray([...arr]);
+      if (updateStepInfo) {
+        updateStepInfo({
+          operation: `Swapping indices ${j} and ${j - 1}`,
+        });
+      }
       await sleep(speed);
 
       const temp = arr[j].value;

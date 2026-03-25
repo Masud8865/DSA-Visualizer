@@ -1,12 +1,12 @@
 import { sleep } from '../utils/helpers';
 
-export const heapSort = async (array, setArray, speed, stopSignal, pauseSignal) => {
+export const heapSort = async (array, setArray, speed, stopSignal, pauseSignal, updateStepInfo) => {
   let arr = array.map(item => ({ ...item }));
   let n = arr.length;
 
   // Build max heap
   for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    const shouldStop = await heapify(arr, n, i, setArray, speed, stopSignal, pauseSignal);
+    const shouldStop = await heapify(arr, n, i, setArray, speed, stopSignal, pauseSignal, updateStepInfo);
     if (shouldStop) return;
   }
 
@@ -27,6 +27,11 @@ export const heapSort = async (array, setArray, speed, stopSignal, pauseSignal) 
     setArray([...arr]);
     await sleep(speed);
 
+    if (updateStepInfo) {
+      updateStepInfo({
+        operation: `Swapping root with index ${i}`,
+      });
+    }
     [arr[0].value, arr[i].value] = [arr[i].value, arr[0].value];
 
     arr[0].status = 'default';
@@ -35,7 +40,7 @@ export const heapSort = async (array, setArray, speed, stopSignal, pauseSignal) 
     await sleep(speed);
 
     // Heapify the reduced heap
-    const shouldStop = await heapify(arr, i, 0, setArray, speed, stopSignal, pauseSignal);
+    const shouldStop = await heapify(arr, i, 0, setArray, speed, stopSignal, pauseSignal, updateStepInfo);
     if (shouldStop) return;
   }
 
@@ -44,7 +49,7 @@ export const heapSort = async (array, setArray, speed, stopSignal, pauseSignal) 
   setArray([...arr]);
 };
 
-const heapify = async (arr, heapSize, rootIndex, setArray, speed, stopSignal, pauseSignal) => {
+const heapify = async (arr, heapSize, rootIndex, setArray, speed, stopSignal, pauseSignal, updateStepInfo) => {
   let largest = rootIndex;
   let left = 2 * rootIndex + 1;
   let right = 2 * rootIndex + 2;
@@ -69,6 +74,11 @@ const heapify = async (arr, heapSize, rootIndex, setArray, speed, stopSignal, pa
   if (left < heapSize && arr[left].status !== 'sorted') {
     arr[left].status = 'comparing';
     setArray([...arr]);
+    if (updateStepInfo) {
+      updateStepInfo({
+        operation: `Comparing left child with root`,
+      });
+    }
     await sleep(speed);
 
     if (arr[left].value > arr[largest].value) {
@@ -80,6 +90,11 @@ const heapify = async (arr, heapSize, rootIndex, setArray, speed, stopSignal, pa
   if (right < heapSize && arr[right].status !== 'sorted') {
     arr[right].status = 'comparing';
     setArray([...arr]);
+    if (updateStepInfo) {
+      updateStepInfo({
+        operation: `Comparing right child with current largest`,
+      });
+    }
     await sleep(speed);
 
     if (arr[right].value > arr[largest].value) {
@@ -97,6 +112,11 @@ const heapify = async (arr, heapSize, rootIndex, setArray, speed, stopSignal, pa
 
   // If largest is not the root, swap and continue heapifying
   if (largest !== rootIndex) {
+    if (updateStepInfo) {
+      updateStepInfo({
+        operation: `Swapping root with largest child`,
+      });
+    }
     arr[rootIndex].status = 'swapping';
     arr[largest].status = 'swapping';
     setArray([...arr]);
@@ -110,7 +130,7 @@ const heapify = async (arr, heapSize, rootIndex, setArray, speed, stopSignal, pa
     await sleep(speed);
 
     // Recursively heapify the affected subtree
-    return await heapify(arr, heapSize, largest, setArray, speed, stopSignal, pauseSignal);
+    return await heapify(arr, heapSize, largest, setArray, speed, stopSignal, pauseSignal, updateStepInfo);
   } else {
     // Reset root status if no swap needed
     if (arr[rootIndex].status === 'pivot') {

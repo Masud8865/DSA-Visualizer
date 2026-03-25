@@ -1,8 +1,19 @@
 import { sleep } from '../utils/helpers';
 
-export const selectionSort = async (array, setArray, speed, stopSignal, pauseSignal) => {
+export const selectionSort = async (array, setArray, speed, stopSignal, pauseSignal, updateStepInfo) => {
   let arr = array.map(item => ({ ...item }));
   const n = arr.length;
+  let stepCounter = 0;
+  const totalSteps = (n * (n - 1)) / 2;
+
+  if (updateStepInfo) {
+    updateStepInfo({
+      totalSteps,
+      currentStep: 0,
+      operation: 'Starting Selection Sort',
+      explanation: 'Selection Sort finds the minimum element from the unsorted part and puts it at the beginning.',
+    });
+  }
 
   for (let i = 0; i < n; i++) {
     if (stopSignal.current) return;
@@ -25,6 +36,15 @@ export const selectionSort = async (array, setArray, speed, stopSignal, pauseSig
 
       arr[j].status = 'comparing';
       setArray([...arr]);
+      
+      stepCounter++;
+      if (updateStepInfo) {
+        updateStepInfo({
+          currentStep: stepCounter,
+          totalSteps,
+          operation: `Comparing index ${j} with current minimum`,
+        });
+      }
       await sleep(speed);
 
       if (arr[j].value < arr[minIndex].value) {
@@ -45,6 +65,13 @@ export const selectionSort = async (array, setArray, speed, stopSignal, pauseSig
     }
 
     if (minIndex !== i) {
+      if (updateStepInfo) {
+        updateStepInfo({
+          currentStep: stepCounter,
+          totalSteps,
+          operation: `Swapping indices ${i} and ${minIndex}`,
+        });
+      }
       arr[i].status = 'swapping';
       arr[minIndex].status = 'swapping';
       setArray([...arr]);
