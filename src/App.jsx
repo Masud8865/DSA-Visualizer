@@ -40,6 +40,7 @@ import BellmanFordPage from "./pages/BellmanFordPage";
 import ComparisonPage from "./pages/ComparisonPage";
 import Profile from "./pages/Profile";
 import NQueensPage from "./pages/NQueensPage";
+import SudokuSolverPage from "./pages/SudokuSolverPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import CheatsheetPage from "./pages/CheatsheetPage";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -236,6 +237,7 @@ function AppShell() {
           <Route path="/visualizer/bankers-algorithm" element={<BankersAlgorithmPage />} />
           <Route path="/visualizer/astar" element={<AStarPage />} />
           <Route path="/visualizer/n-queens" element={<NQueensPage />} />
+          <Route path="/visualizer/sudoku-solver" element={<SudokuSolverPage />} />
           <Route path="/visualizer/knapsack" element={<KnapsackPage />} />
           <Route path="/visualizer/dfs" element={<GraphVisualizerPage cppSnippet={dfsCPP} javaSnippet={dfsJava} />} />
           <Route path="/visualizer/stack" element={<StackVisualizerPage />} />

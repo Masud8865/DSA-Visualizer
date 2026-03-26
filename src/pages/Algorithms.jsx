@@ -563,6 +563,20 @@ export const algorithmsCatalog = [
     accent: "text-amber-200",
   },
   {
+    id: "sudoku-solver",
+    title: "Sudoku Solver",
+    description:
+      "Fill the 9×9 grid perfectly using recursive backtracking. Exploring possibilities cell by cell until a valid solution forms.",
+    path: "/visualizer/sudoku-solver",
+    category: "backtracking",
+    type: "Backtracking",
+    complexity: "O(9^(N×N))",
+    level: "Advanced",
+    icon: Grid3X3,
+    gradient: "from-sky-500/25 via-blue-500/15 to-transparent",
+    accent: "text-sky-200",
+  },
+  {
     id: "segment-tree",
     title: "Segment Tree",
     description:
