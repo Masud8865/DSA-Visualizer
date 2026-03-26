@@ -57,12 +57,14 @@ export default function ComparisonPage() {
     elapsedTime,
     algorithmStats,
     realTimeData,
+    algorithmArrays,
     arrayType,
     setSelectedAlgorithms,
     generateRandomArray,
     runComparison,
     pauseComparison,
     resumeComparison,
+    setSpeed,
     resetStats,
     setArrayFromScenario,
     canCompare,
@@ -249,7 +251,7 @@ export default function ComparisonPage() {
                   min="10"
                   max="150"
                   value={speed}
-                  onChange={() => {}}
+                  onChange={(e) => setSpeed(+e.target.value)}
                   className="w-full accent-blue-400"
                   disabled={isRunning}
                 />
@@ -383,7 +385,7 @@ export default function ComparisonPage() {
                             {stats.swaps || 0}
                           </td>
                           <td className="py-3 text-center text-sm text-slate-300">
-                            {stats.isComplete ? formatElapsed(elapsedTime) : '--'}
+                            {stats.isComplete ? formatElapsed(stats.finishTime || elapsedTime) : '--'}
                           </td>
                         </tr>
                       );
@@ -425,13 +427,13 @@ export default function ComparisonPage() {
                       <div className="flex items-center gap-2 text-xs">
                         <span className="text-slate-400">Time:</span>
                         <span className="font-semibold text-white">
-                          {stats.isComplete ? formatElapsed(elapsedTime) : '--'}
+                          {stats.isComplete ? formatElapsed(stats.finishTime || elapsedTime) : '--'}
                         </span>
                       </div>
                     </div>
                     
                     <div className="relative h-[200px] bg-slate-900/55 rounded-xl border border-slate-700/60 flex items-end justify-center gap-0.5 px-2 pb-2">
-                      {array.map((item, i) => (
+                      {(algorithmArrays[algo.id] || array).map((item, i) => (
                         <motion.div
                           key={i}
                           layout

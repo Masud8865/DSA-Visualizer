@@ -5,7 +5,8 @@ export const mergeSort = async (
   setArray,
   speed,
   stopSignal,
-  pauseSignal
+  pauseSignal,
+  updateStepInfo
 ) => {
 
   let arr = array.map(item => ({ ...item }));
@@ -34,6 +35,11 @@ export const mergeSort = async (
       if (await checkPauseAndStop()) return;
       arr[k].status = 'comparing';
       setArray([...arr]);
+      if (updateStepInfo) {
+        updateStepInfo({
+          operation: `Comparing values for merge`,
+        });
+      }
       await sleep(speed);
 
       if (leftArr[i].value <= rightArr[j].value) {
@@ -54,6 +60,11 @@ export const mergeSort = async (
 
       arr[k].status = 'comparing';
       setArray([...arr]);
+      if (updateStepInfo) {
+        updateStepInfo({
+          operation: `Placing remaining element`,
+        });
+      }
       await sleep(speed);
 
       arr[k] = { ...leftArr[i], status: 'default' };
@@ -69,6 +80,11 @@ export const mergeSort = async (
 
       arr[k].status = 'comparing';
       setArray([...arr]);
+      if (updateStepInfo) {
+        updateStepInfo({
+          operation: `Placing remaining element`,
+        });
+      }
       await sleep(speed);
 
       arr[k] = { ...rightArr[j], status: 'default' };
