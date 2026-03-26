@@ -26,6 +26,7 @@ import {
   Bookmark,
   BookmarkCheck,
   Crown,
+  Map,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -575,6 +576,20 @@ export const algorithmsCatalog = [
     icon: Grid3X3,
     gradient: "from-sky-500/25 via-blue-500/15 to-transparent",
     accent: "text-sky-200",
+  },
+  {
+    id: "rat-in-a-maze",
+    title: "Rat in a Maze",
+    description:
+      "Find paths for a rat from source to destination in a maze using recursive backtracking.",
+    path: "/visualizer/rat-in-a-maze",
+    category: "backtracking",
+    type: "Backtracking",
+    complexity: "O(4^(N×N))",
+    level: "Advanced",
+    icon: Map,
+    gradient: "from-emerald-500/25 via-teal-500/15 to-transparent",
+    accent: "text-emerald-200",
   },
   {
     id: "segment-tree",
