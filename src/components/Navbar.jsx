@@ -9,12 +9,13 @@ const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/algorithms', label: 'Algorithms' },
   { to: '/cheatsheet', label: 'Cheatsheet' },
+  { to: '/progress', label: 'My Progress', icon: BarChart3 },
   { to: '/contact', label: 'Contact Us' },
 ];
 
 const userNavLinks = [
   { to: '/profile', label: 'My Profile', icon: User },
-  { to: '/progress', label: 'My Progress', icon: BarChart3 },
+  
   { to: '/achievements', label: 'Achievements', icon: Trophy },
   { to: '/learning-paths', label: 'Learning Paths', icon: BookOpen },
   { to: '/favorites', label: 'Favorites', icon: Heart },

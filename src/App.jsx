@@ -52,6 +52,7 @@ import PublicRoute from "./components/PublicRoute";
 import VisualizerThemeDock from "./components/VisualizerThemeDock";
 import BankersAlgorithmPage from "./pages/BankersAlgorithmPage";
 import HashTablePage from "./pages/HashTablePage";
+import ProgressDashboard from "./pages/ProgressDashboard";
 import {
   VisualizerThemeProvider,
   useVisualizerTheme,
@@ -246,6 +247,7 @@ function AppShell() {
           <Route path="/visualizer/postfix-to-infix" element={<PostfixToInfixPage />} />
           <Route path="/compare" element={<ComparisonPage />} />
           <Route path="/cheatsheet" element={<CheatsheetPage />} />
+          <Route path="/progress" element={<ProgressDashboard />}/>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
