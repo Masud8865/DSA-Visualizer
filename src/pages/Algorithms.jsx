@@ -10,6 +10,7 @@ import {
   Cpu,
   Dices,
   Filter,
+  Palette,
   Grid3X3,
   Layers,
   Layers2,
@@ -662,6 +663,20 @@ export const algorithmsCatalog = [
     gradient: "from-cyan-500/25 via-blue-500/15 to-transparent",
     accent: "text-cyan-200",
   },
+  {
+    id: "map-coloring",
+    title: "Map Coloring",
+    description:
+      "Color a map or graph such that no two adjacent regions share the same color using backtracking constraints.",
+    path: "/visualizer/map-coloring",
+    category: "backtracking",
+    type: "Backtracking",
+    complexity: "O(m^V)",
+    level: "Advanced",
+    icon: Palette,
+    gradient: "from-pink-500/25 via-purple-500/15 to-transparent",
+    accent: "text-pink-200",
+  },
 ];
 
 const filterTabs = [
@@ -683,6 +698,7 @@ const filterTabs = [
   { id: "hash-table", label: "Hash Table" },
   { id: "deadlock-avoidance", label: "Deadlock Avoidance" },
   { id: "os-algorithms", label: "Operating Systems" },
+  { id: "backtracking", label: "Backtracking" },
 ];
 
 const levelTabs = ["All", "Beginner", "Intermediate", "Advanced"];

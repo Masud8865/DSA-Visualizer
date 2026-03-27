@@ -54,6 +54,7 @@ import PublicRoute from "./components/PublicRoute";
 import VisualizerThemeDock from "./components/VisualizerThemeDock";
 import BankersAlgorithmPage from "./pages/BankersAlgorithmPage";
 import HashTablePage from "./pages/HashTablePage";
+import MapColoringPage from "./pages/MapColoringPage";
 import CPUSchedulingPage from "./pages/CPUSchedulingVisualizer";
 import ProgressDashboard from "./pages/ProgressDashboard";
 import {
@@ -254,6 +255,7 @@ function AppShell() {
           <Route path="/cheatsheet" element={<CheatsheetPage />} />
           <Route path="/progress" element={<ProgressDashboard />}/>
           <Route path="/visualizer/cpu-scheduling" element={<CPUSchedulingPage />} />
+          <Route path="/visualizer/map-coloring" element={<MapColoringPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
