@@ -7,6 +7,7 @@ import {
   ArrowUpWideNarrow,
   Binary,
   BrainCircuit,
+  Cpu,
   Dices,
   Filter,
   Grid3X3,
@@ -647,6 +648,20 @@ export const algorithmsCatalog = [
     gradient: "from-violet-500/25 via-fuchsia-500/15 to-transparent",
     accent: "text-violet-200",
   },
+  {
+    id: "cpu-scheduling",
+    title: "CPU Scheduling",
+    description:
+      "Visualize Preemptive CPU Scheduling Algorithms including Round Robin (RR) and Shortest Remaining Time First (SRTF).",
+    path: "/visualizer/cpu-scheduling",
+    category: "os-algorithms",
+    type: "Scheduling",
+    complexity: "O(n log n)",
+    level: "Intermediate",
+    icon: Cpu,
+    gradient: "from-cyan-500/25 via-blue-500/15 to-transparent",
+    accent: "text-cyan-200",
+  },
 ];
 
 const filterTabs = [
@@ -667,6 +682,7 @@ const filterTabs = [
   { id: "range-queries", label: "Range Queries" },
   { id: "hash-table", label: "Hash Table" },
   { id: "deadlock-avoidance", label: "Deadlock Avoidance" },
+  { id: "os-algorithms", label: "Operating Systems" },
 ];
 
 const levelTabs = ["All", "Beginner", "Intermediate", "Advanced"];
@@ -779,6 +795,9 @@ export default function Algorithms({ defaultFilter = "all" }) {
   ).length;
   const hashTableCount = algorithmsCatalog.filter(
     (algorithm) => algorithm.category === "hash-table",
+  ).length;
+   const osCount = algorithmsCatalog.filter(
+    (algorithm) => algorithm.category === "os-algorithms" || algorithm.category === "deadlock-avoidance",
   ).length;
   const hasActiveFilters =
     activeFilter !== "all" ||
@@ -932,6 +951,14 @@ export default function Algorithms({ defaultFilter = "all" }) {
                 </p>
                 <p className="mt-1 text-2xl font-bold text-violet-200">
                   {hashTableCount}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                <p className="text-[10px] lg:text-xs uppercase tracking-wider text-slate-400 truncate" title="Operating Systems">
+                  OS Algos
+                </p>
+                <p className="mt-1 text-2xl font-bold text-pink-200">
+                  {osCount}
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
