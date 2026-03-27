@@ -54,6 +54,7 @@ import PublicRoute from "./components/PublicRoute";
 import VisualizerThemeDock from "./components/VisualizerThemeDock";
 import BankersAlgorithmPage from "./pages/BankersAlgorithmPage";
 import HashTablePage from "./pages/HashTablePage";
+import CPUSchedulingPage from "./pages/CPUSchedulingVisualizer";
 import ProgressDashboard from "./pages/ProgressDashboard";
 import {
   VisualizerThemeProvider,
@@ -252,6 +253,7 @@ function AppShell() {
           <Route path="/compare" element={<ComparisonPage />} />
           <Route path="/cheatsheet" element={<CheatsheetPage />} />
           <Route path="/progress" element={<ProgressDashboard />}/>
+          <Route path="/visualizer/cpu-scheduling" element={<CPUSchedulingPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
